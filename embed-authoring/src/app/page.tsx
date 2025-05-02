@@ -23,6 +23,7 @@ import { createPresignToken } from "@/lib/create-presign-token";
 import { DocumentsResponse, findDocuments } from "@/lib/find-documents";
 import { getDocument } from "@/lib/get-document";
 import { sendDocument } from "@/lib/send-document";
+import { UpdateDocument } from "./update-document";
 
 // Server action to fetch document URL
 async function getDocumentUrlAction(documentId: number): Promise<string> {
@@ -49,7 +50,7 @@ export default async function Dashboard() {
   const { data: documents } = await findDocuments(host);
 
   const getStatusVariant = (
-    status: DocumentsResponse["data"][number]["status"],
+    status: DocumentsResponse["data"][number]["status"]
   ) => {
     return match(status)
       .with("COMPLETED", () => "default" as const)
@@ -109,21 +110,39 @@ export default async function Dashboard() {
                     <TableCell className="py-4 text-right first:pl-4 last:pr-4">
                       {match(document.status)
                         .with("DRAFT", () => (
-                          <SendDocument
-                            documentId={document.id}
-                            sendDocument={sendDocumentAction}
-                          />
+                          <div className="inline-flex items-center gap-2">
+                            <SendDocument
+                              documentId={document.id}
+                              sendDocument={sendDocumentAction}
+                            />
+
+                            <UpdateDocument
+                              host={host}
+                              documentId={document.id}
+                              presignToken={presignToken}
+                            />
+                          </div>
                         ))
                         .otherwise(() => (
-                          <ViewDocument
-                            documentId={document.id}
-                            documentTitle={document.title}
-                            fetchDocumentUrl={getDocumentUrlAction}
-                            disabled={
-                              document.status === "PENDING" ||
-                              document.status === "REJECTED"
-                            }
-                          />
+                          <div className="inline-flex items-center gap-2">
+                            <ViewDocument
+                              documentId={document.id}
+                              documentTitle={document.title}
+                              fetchDocumentUrl={getDocumentUrlAction}
+                              disabled={
+                                document.status === "PENDING" ||
+                                document.status === "REJECTED"
+                              }
+                            />
+
+                            {document.status !== "COMPLETED" && (
+                              <UpdateDocument
+                                host={host}
+                                documentId={document.id}
+                                presignToken={presignToken}
+                              />
+                            )}
+                          </div>
                         ))}
                     </TableCell>
                   </TableRow>
