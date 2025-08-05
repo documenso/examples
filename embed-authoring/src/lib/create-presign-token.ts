@@ -7,15 +7,25 @@ export const createPresignToken = async (host: string) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${process.env.DOCUMENSO_API_KEY}`,
       },
-      body: JSON.stringify({}),
-    },
+      body: JSON.stringify({
+        expiresIn: 3600,
+      }),
+    }
   );
 
-  const data = await response.json();
+  const responseText = await response.text();
 
   if (!response.ok) {
-    throw new Error("Failed to create presign token");
+    try {
+      const errorData = JSON.parse(responseText);
+      console.error("API Error:", errorData);
+      throw new Error(errorData.message || "Failed to create presign token");
+    } catch {
+      console.error("Failed to parse error response:", responseText);
+      throw new Error("Failed to create presign token");
+    }
   }
 
+  const data = JSON.parse(responseText);
   return data.token;
 };
