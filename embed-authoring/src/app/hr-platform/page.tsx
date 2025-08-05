@@ -2,7 +2,7 @@ import { FileText } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { findDocuments } from "@/lib/find-documents";
 import { createPresignToken } from "@/lib/create-presign-token";
-import SmartTabs from "./hr-platform/components/smart-tabs";
+import SmartTabs from "./components/smart-tabs";
 import { getDocument } from "@/lib/get-document";
 import { sendDocument } from "@/lib/send-document";
 
