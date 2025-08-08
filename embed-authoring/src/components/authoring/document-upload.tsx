@@ -7,7 +7,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { unstable_EmbedCreateDocument as EmbedCreateDocument } from "@documenso/embed-react";
+// Remove when the update to the next version of the embeds is published
+import { unstable_EmbedCreateDocument as EmbedCreateDocument } from "../../../packages/react";
+
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/sonner";
 
@@ -16,10 +18,7 @@ interface DocumentUploadProps {
   presignToken: string;
 }
 
-export default function DocumentUpload({
-  host,
-  presignToken,
-}: DocumentUploadProps) {
+export function DocumentUpload({ host, presignToken }: DocumentUploadProps) {
   const router = useRouter();
 
   const handleDocumentCreated = () => {
@@ -43,6 +42,7 @@ export default function DocumentUpload({
               className="h-[1450px] w-full"
               host={host}
               presignToken={presignToken}
+              darkModeDisabled={true}
               onDocumentCreated={handleDocumentCreated}
             />
           </div>

@@ -2,7 +2,7 @@ import { FileText } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { findDocuments } from "@/lib/find-documents";
 import { createPresignToken } from "@/lib/create-presign-token";
-import SmartTabs from "./hr-platform/components/smart-tabs";
+import { AuthoringTabs } from "@/components/authoring/authoring-tabs";
 import { getDocument } from "@/lib/get-document";
 import { sendDocument } from "@/lib/send-document";
 
@@ -18,7 +18,7 @@ async function sendDocumentAction(documentId: number): Promise<void> {
   return await sendDocument(host, documentId);
 }
 
-export default async function HRPlatformDemo({
+export default async function Home({
   searchParams,
 }: {
   searchParams: Promise<{ tab?: string; documentId?: string }>;
@@ -64,7 +64,7 @@ export default async function HRPlatformDemo({
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <SmartTabs
+        <AuthoringTabs
           documents={documents}
           stats={stats}
           selectedDocument={selectedDocument}

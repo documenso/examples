@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { FileText, Upload } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import DocumentUpload from "./document-upload";
-import DocumentPreview from "./document-preview";
-import DocumentDashboard from "./document-dashboard";
+import { DocumentUpload } from "./document-upload";
+import { DocumentPreview } from "./document-preview";
+import { DocumentDashboard } from "./document-dashboard";
 import type { DocumentsResponse } from "@/lib/find-documents";
 
-interface SmartTabsProps {
+interface AuthoringTabsProps {
   documents: DocumentsResponse["data"];
   stats: {
     total: number;
@@ -25,7 +25,7 @@ interface SmartTabsProps {
   initialTab: string;
 }
 
-export default function SmartTabs({
+export function AuthoringTabs({
   documents,
   stats,
   selectedDocument,
@@ -34,13 +34,12 @@ export default function SmartTabs({
   getDocumentUrl,
   sendDocument,
   initialTab,
-}: SmartTabsProps) {
+}: AuthoringTabsProps) {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState(initialTab);
 
-  // Update tab when URL changes
   useEffect(() => {
-    const tab = searchParams.get('tab') || 'dashboard';
+    const tab = searchParams.get("tab") || "dashboard";
     setActiveTab(tab);
   }, [searchParams]);
 
@@ -62,8 +61,8 @@ export default function SmartTabs({
       </TabsList>
 
       <TabsContent value="dashboard" className="space-y-6">
-        <DocumentDashboard 
-          documents={documents} 
+        <DocumentDashboard
+          documents={documents}
           stats={stats}
           host={host}
           presignToken={presignToken}
@@ -72,14 +71,11 @@ export default function SmartTabs({
       </TabsContent>
 
       <TabsContent value="upload">
-        <DocumentUpload 
-          host={host}
-          presignToken={presignToken}
-        />
+        <DocumentUpload host={host} presignToken={presignToken} />
       </TabsContent>
 
       <TabsContent value="preview">
-        <DocumentPreview 
+        <DocumentPreview
           selectedDocument={selectedDocument}
           documents={documents}
           host={host}

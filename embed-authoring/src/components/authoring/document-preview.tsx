@@ -34,7 +34,7 @@ interface DocumentPreviewProps {
   getDocumentUrl: (documentId: number) => Promise<string>;
 }
 
-export default function DocumentPreview({
+export function DocumentPreview({
   selectedDocument,
   documents,
   host,
@@ -52,7 +52,6 @@ export default function DocumentPreview({
     if (displayDocument) {
       setDocumentUrl(null);
 
-      // Only try to get document URL for completed documents
       if (displayDocument.status === "COMPLETED") {
         getDocumentUrl(displayDocument.id)
           .then((url) => {
@@ -63,7 +62,6 @@ export default function DocumentPreview({
           });
       }
 
-      // Get recipient token for signing if pending
       if (displayDocument.status === "PENDING") {
         const signer = displayDocument.recipients.find(
           (r) => r.role === "SIGNER"
@@ -96,7 +94,6 @@ export default function DocumentPreview({
     });
   };
 
-
   if (!displayDocument) {
     return (
       <Card>
@@ -118,7 +115,6 @@ export default function DocumentPreview({
 
   return (
     <div className="space-y-6">
-      {/* Document Info */}
       <Card>
         <CardHeader>
           <div className="flex items-start justify-between">
@@ -195,9 +191,7 @@ export default function DocumentPreview({
         </CardContent>
       </Card>
 
-      {/* Show either Signing Interface OR Document Preview - not both */}
       {displayDocument.status === "PENDING" && recipientToken ? (
-        // Show Signing Interface for pending documents
         <Card>
           <CardHeader>
             <CardTitle>Document Signing</CardTitle>
@@ -211,6 +205,7 @@ export default function DocumentPreview({
                 className="h-[900px] w-full"
                 host={host}
                 token={recipientToken}
+                darkModeDisabled={true}
                 onDocumentCompleted={() => {
                   window.location.reload();
                 }}
@@ -219,7 +214,6 @@ export default function DocumentPreview({
           </CardContent>
         </Card>
       ) : showEdit && displayDocument.status === "DRAFT" ? (
-        // Show Edit Interface for draft documents when editing
         <Card>
           <CardHeader>
             <CardTitle>Edit Document</CardTitle>
@@ -234,13 +228,13 @@ export default function DocumentPreview({
                 host={host}
                 presignToken={presignToken}
                 documentId={displayDocument.id}
+                darkModeDisabled={true}
                 onDocumentUpdated={handleDocumentUpdated}
               />
             </div>
           </CardContent>
         </Card>
       ) : (
-        // Show Document Preview for all other cases
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">

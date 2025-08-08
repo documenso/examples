@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { SendDocument } from "@/app/send-document";
+import { SendDocumentButton } from "@/components/authoring/send-document-button";
 import { unstable_EmbedUpdateDocument as EmbedUpdateDocument } from "@documenso/embed-react";
 import { toast } from "@/components/ui/sonner";
 import { X } from "lucide-react";
@@ -31,7 +31,7 @@ interface DocumentDashboardProps {
   sendDocument: (documentId: number) => Promise<void>;
 }
 
-export default function DocumentDashboard({
+export function DocumentDashboard({
   documents,
   stats,
   host,
@@ -143,6 +143,7 @@ export default function DocumentDashboard({
               host={host}
               presignToken={presignToken}
               documentId={editingDocument.id}
+              darkModeDisabled={true}
               onDocumentUpdated={handleDocumentUpdated}
             />
           </div>
@@ -263,7 +264,7 @@ export default function DocumentDashboard({
                       <div className="flex items-center gap-2">
                         {doc.status === "DRAFT" ? (
                           <>
-                            <SendDocument
+                            <SendDocumentButton
                               documentId={doc.id}
                               sendDocument={sendDocument}
                             />
@@ -283,11 +284,11 @@ export default function DocumentDashboard({
                               size="sm"
                               onClick={() =>
                                 router.push(
-                                  `/hr-platform?tab=preview&documentId=${doc.id}`
+                                  `/?tab=preview&documentId=${doc.id}`
                                 )
                               }
                             >
-                              Preview
+                              {doc.status === "PENDING" ? "Sign" : "Preview"}
                             </Button>
                             {doc.status !== "COMPLETED" && (
                               <Button

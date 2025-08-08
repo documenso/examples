@@ -2,43 +2,37 @@
 
 import { Loader2 } from "lucide-react";
 import { useState, useTransition } from "react";
-
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
-interface SendDocumentProps {
+interface SendDocumentButtonProps {
   documentId: number;
   sendDocument: (documentId: number) => Promise<void>;
   disabled?: boolean;
 }
 
-export const SendDocument = ({
+export function SendDocumentButton({
   documentId,
   sendDocument,
   disabled = false,
-}: SendDocumentProps) => {
+}: SendDocumentButtonProps) {
   const router = useRouter();
-
   const [isPending, startTransition] = useTransition();
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleSend = () => {
-    if (isPending) {
-      return;
-    }
-
+  function handleSend() {
+    if (isPending) return;
     startTransition(async () => {
       try {
         await sendDocument(documentId);
         setIsSuccess(true);
-        // Reset success state after 2 seconds
         setTimeout(() => setIsSuccess(false), 2000);
         router.refresh();
       } catch (error) {
         console.error("Failed to send document:", error);
       }
     });
-  };
+  }
 
   return (
     <Button
@@ -58,4 +52,4 @@ export const SendDocument = ({
       )}
     </Button>
   );
-};
+}
