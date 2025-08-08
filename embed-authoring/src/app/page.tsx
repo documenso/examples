@@ -40,16 +40,16 @@ export default async function Home({
     : documents[0] || null;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200">
+    <div className="min-h-screen bg-background">
+      <header className="bg-card border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-white" />
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-primary-foreground" />
                 </div>
-                <h1 className="text-xl font-semibold text-gray-900">Acme</h1>
+                <h1 className="text-xl font-semibold text-foreground">Acme</h1>
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -57,7 +57,7 @@ export default async function Home({
                 <AvatarImage src="/placeholder.svg?height=32&width=32" />
                 <AvatarFallback>HR</AvatarFallback>
               </Avatar>
-              <span className="text-sm text-gray-700">Duncan</span>
+              <span className="text-sm text-muted-foreground">Duncan</span>
             </div>
           </div>
         </div>

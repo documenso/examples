@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 // Remove when the update to the next version of the embeds is published
 import { unstable_EmbedCreateDocument as EmbedCreateDocument } from "../../../packages/react";
+import { embedCssVars } from "@/lib/embed-css-vars";
 
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/sonner";
@@ -43,6 +44,7 @@ export function DocumentUpload({ host, presignToken }: DocumentUploadProps) {
               host={host}
               presignToken={presignToken}
               darkModeDisabled={true}
+              cssVars={embedCssVars}
               onDocumentCreated={handleDocumentCreated}
             />
           </div>

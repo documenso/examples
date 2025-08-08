@@ -17,6 +17,7 @@ import { toast } from "@/components/ui/sonner";
 import { X } from "lucide-react";
 import type { DocumentsResponse } from "@/lib/find-documents";
 import { useRouter } from "next/navigation";
+import { embedCssVars } from "@/lib/embed-css-vars";
 
 interface DocumentDashboardProps {
   documents: DocumentsResponse["data"];
@@ -144,6 +145,7 @@ export function DocumentDashboard({
               presignToken={presignToken}
               documentId={editingDocument.id}
               darkModeDisabled={true}
+              cssVars={embedCssVars}
               onDocumentUpdated={handleDocumentUpdated}
             />
           </div>
@@ -236,8 +238,8 @@ export function DocumentDashboard({
                     className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
                   >
                     <div className="flex items-center space-x-4">
-                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <FileText className="w-5 h-5 text-blue-600" />
+                      <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-primary/10">
+                        <FileText className="w-5 h-5 text-primary" />
                       </div>
                       <div>
                         <h4 className="font-medium text-gray-900">

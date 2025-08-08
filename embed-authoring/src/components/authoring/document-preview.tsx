@@ -25,6 +25,7 @@ import { EmbedSignDocument } from "@documenso/embed-react";
 import { unstable_EmbedUpdateDocument as EmbedUpdateDocument } from "@documenso/embed-react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/sonner";
+import { embedCssVars } from "@/lib/embed-css-vars";
 
 interface DocumentPreviewProps {
   selectedDocument: DocumentsResponse["data"][0] | null;
@@ -206,6 +207,7 @@ export function DocumentPreview({
                 host={host}
                 token={recipientToken}
                 darkModeDisabled={true}
+                cssVars={embedCssVars}
                 onDocumentCompleted={() => {
                   window.location.reload();
                 }}
@@ -229,6 +231,7 @@ export function DocumentPreview({
                 presignToken={presignToken}
                 documentId={displayDocument.id}
                 darkModeDisabled={true}
+                cssVars={embedCssVars}
                 onDocumentUpdated={handleDocumentUpdated}
               />
             </div>
