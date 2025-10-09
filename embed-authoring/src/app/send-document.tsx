@@ -31,7 +31,6 @@ export const SendDocument = ({
       try {
         await sendDocument(documentId);
         setIsSuccess(true);
-        // Reset success state after 2 seconds
         setTimeout(() => setIsSuccess(false), 2000);
         router.refresh();
       } catch (error) {

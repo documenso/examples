@@ -1,0 +1,143 @@
+// This is your Prisma schema file for Turso/libsql
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String   @id @default(cuid())
+  name            String
+  email           String   @unique
+  avatar          String?
+  role            String   // "client" or "freelancer"
+
+  // Client fields
+  rating          Float?
+  jobsPosted      Int      @default(0)
+
+  // Freelancer fields
+  title           String?
+  completedJobs   Int      @default(0)
+  hourlyRate      Float?
+
+  // Relations
+  postedJobs      Job[]    @relation("ClientJobs")
+  applications    Application[]
+  contractsAsClient     Contract[] @relation("ClientContracts")
+  contractsAsFreelancer Contract[] @relation("FreelancerContracts")
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Job {
+  id              String   @id @default(cuid())
+  title           String
+  description     String
+
+  // Budget stored as JSON string or separate fields
+  budgetMin       Float
+  budgetMax       Float
+  budgetType      String   // "fixed" or "hourly"
+
+  duration        String
+  skills          String   // Stored as JSON array string
+
+  status          String   @default("open") // "open", "in-progress", "completed"
+  applicants      Int      @default(0)
+
+  // Relations
+  postedById      String
+  postedBy        User     @relation("ClientJobs", fields: [postedById], references: [id], onDelete: Cascade)
+
+  applications    Application[]
+  contracts       Contract[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([postedById])
+  @@index([status])
+}
+
+model Application {
+  id              String   @id @default(cuid())
+
+  coverLetter     String
+  proposedBudget  Float
+  proposedDuration String
+  status          String   @default("pending") // "pending", "accepted", "rejected"
+
+  // Relations
+  jobId           String
+  job             Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  freelancerId    String
+  freelancer      User     @relation(fields: [freelancerId], references: [id], onDelete: Cascade)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([jobId])
+  @@index([freelancerId])
+  @@index([status])
+}
+
+model Contract {
+  id              String   @id @default(cuid())
+
+  status          String   @default("pending-signatures") // "pending-signatures", "active", "completed"
+  clientSigned    Boolean  @default(false)
+  freelancerSigned Boolean @default(false)
+
+  // Documenso Integration - signing timestamps tracked via webhook
+  documensoDocumentId      String?   // Documenso document ID - generated once and reused
+  clientSignedAt           DateTime? // When client signed via Documenso
+  freelancerSignedAt       DateTime? // When freelancer signed via Documenso
+
+  // Relations
+  jobId           String
+  job             Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  clientId        String
+  client          User     @relation("ClientContracts", fields: [clientId], references: [id], onDelete: Cascade)
+
+  freelancerId    String
+  freelancer      User     @relation("FreelancerContracts", fields: [freelancerId], references: [id], onDelete: Cascade)
+
+  milestones      Milestone[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([jobId])
+  @@index([clientId])
+  @@index([freelancerId])
+  @@index([status])
+}
+
+model Milestone {
+  id              String   @id @default(cuid())
+  title           String
+  description     String
+  amount          Float
+  dueDate         DateTime
+  status          String   @default("pending") // "pending", "in-progress", "completed", "paid"
+
+  // Relations
+  contractId      String
+  contract        Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([contractId])
+  @@index([status])
+}
