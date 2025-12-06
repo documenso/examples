@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@documenso/embed-react": "^0.3.0",
+    "@documenso/sdk-typescript": "^0.5.1",
     "@hookform/resolvers": "^3.10.0",
     "@libsql/client": "^0.15.15",
     "@prisma/adapter-libsql": "^6.17.0",

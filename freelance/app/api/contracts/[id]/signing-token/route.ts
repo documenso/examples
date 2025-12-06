@@ -1,11 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-
-interface TemplateRecipient {
-	id: number;
-	signingOrder: number;
-	role: string;
-}
+import { documenso } from "@/lib/documenso";
 
 export async function POST(
 	request: NextRequest,
@@ -47,64 +42,33 @@ export async function POST(
 			);
 		}
 
-		const apiKey = process.env.DOCUMENSO_API_KEY;
 		const templateId = process.env.DOCUMENSO_TEMPLATE_ID;
-		const documensoHost =
-			process.env.NEXT_PUBLIC_DOCUMENSO_HOST ||
-			"https://stg-app.documenso.com";
 
-		if (!apiKey || !templateId) {
+		if (!templateId) {
 			return NextResponse.json(
-				{ error: "Documenso API key or template ID not configured" },
+				{ error: "Documenso template ID not configured" },
 				{ status: 500 },
 			);
 		}
 
+		const templateIdNumber = Number(templateId);
+
 		let documentId = contract.documensoDocumentId;
-		let responseRecipients;
+		let responseRecipients: Array<{ email: string; token: string }>;
 
 		if (documentId) {
-			const documentResponse = await fetch(
-				`${documensoHost}/api/v2-beta/documents/${documentId}`,
-				{
-					method: "GET",
-					headers: {
-						Authorization: `Bearer ${apiKey}`,
-					},
-				},
-			);
-
-			if (!documentResponse.ok) {
-				const errorText = await documentResponse.text();
-				return NextResponse.json(
-					{ error: "Failed to fetch existing document", details: errorText },
-					{ status: documentResponse.status },
-				);
-			}
-
-			const documentData = await documentResponse.json();
-			responseRecipients = documentData.recipients || [];
+			const document = await documenso.documents.get({
+				documentId: Number(documentId),
+			});
+			responseRecipients = document.recipients.map((r) => ({
+				email: r.email,
+				token: r.token,
+			}));
 		} else {
-			const templateResponse = await fetch(
-				`${documensoHost}/api/v2-beta/template/${templateId}`,
-				{
-					method: "GET",
-					headers: {
-						Authorization: `Bearer ${apiKey}`,
-					},
-				},
-			);
-
-			if (!templateResponse.ok) {
-				const errorText = await templateResponse.text();
-				return NextResponse.json(
-					{ error: "Failed to fetch template details", details: errorText },
-					{ status: templateResponse.status },
-				);
-			}
-
-			const templateData = await templateResponse.json();
-			const templateRecipients = templateData.recipients || [];
+			const template = await documenso.templates.get({
+				templateId: templateIdNumber,
+			});
+			const templateRecipients = template.recipients || [];
 
 			if (templateRecipients.length === 0) {
 				return NextResponse.json(
@@ -122,7 +86,7 @@ export async function POST(
 				);
 			}
 
-			const recipients = templateRecipients.map((recipient: TemplateRecipient, index: number) => ({
+			const recipients = templateRecipients.map((recipient, index) => ({
 				id: recipient.id,
 				name: index === 0 ? contract.client.name : contract.freelancer.name,
 				email: index === 0 ? contract.client.email : contract.freelancer.email,
@@ -130,30 +94,17 @@ export async function POST(
 				role: recipient.role,
 			}));
 
-			const response = await fetch(`${documensoHost}/api/v2-beta/template/use`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${apiKey}`,
-				},
-				body: JSON.stringify({
-					templateId: parseInt(templateId),
-					recipients,
-					distributeDocument: true,
-				}),
+			const document = await documenso.templates.use({
+				templateId: templateIdNumber,
+				recipients,
+				distributeDocument: true,
 			});
 
-			if (!response.ok) {
-				const errorText = await response.text();
-				return NextResponse.json(
-					{ error: "Failed to generate document", details: errorText },
-					{ status: response.status },
-				);
-			}
-
-			const data = await response.json();
-			documentId = data.documentId;
-			responseRecipients = data.recipients || [];
+			documentId = String(document.id);
+			responseRecipients = document.recipients.map((r) => ({
+				email: r.email,
+				token: r.token,
+			}));
 
 			await prisma.contract.update({
 				where: { id },
@@ -166,7 +117,7 @@ export async function POST(
 			: contract.freelancer.email;
 
 		const userRecipient = responseRecipients.find(
-			(r: { email: string }) => r.email === currentUserEmail,
+			(r) => r.email === currentUserEmail,
 		);
 
 		if (!userRecipient?.token) {

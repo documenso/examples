@@ -8,14 +8,12 @@ import { sendDocument } from "@/lib/send-document";
 
 async function getDocumentUrlAction(documentId: number): Promise<string> {
   "use server";
-  const host = process.env.DOCUMENSO_HOST || "https://app.documenso.com";
-  return await getDocument(host, documentId);
+  return await getDocument(documentId);
 }
 
 async function sendDocumentAction(documentId: number): Promise<void> {
   "use server";
-  const host = process.env.DOCUMENSO_HOST || "https://app.documenso.com";
-  return await sendDocument(host, documentId);
+  return await sendDocument(documentId);
 }
 
 export default async function Home({
@@ -25,8 +23,8 @@ export default async function Home({
 }) {
   const params = await searchParams;
   const host = process.env.DOCUMENSO_HOST || "https://app.documenso.com";
-  const presignToken = await createPresignToken(host);
-  const { data: documents, count } = await findDocuments(host);
+  const presignToken = await createPresignToken();
+  const { data: documents, count } = await findDocuments();
 
   const stats = {
     total: count,

@@ -1,3 +1,5 @@
+import { documenso } from "./documenso";
+
 type Recipient = {
   email: string;
   name: string;
@@ -22,18 +24,28 @@ export type DocumentsResponse = {
   count: number;
 };
 
-export const findDocuments = async (host: string) => {
-  const response = await fetch(`${host}/api/v2-beta/document`, {
-    headers: {
-      Authorization: `Bearer ${process.env.DOCUMENSO_API_KEY}`,
-    },
-  });
+export const findDocuments = async () => {
+  const response = await documenso.documents.find({});
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch documents: ${response.status} ${response.statusText}`)
-  }
+  const data: Document[] = response.data.map((doc) => ({
+    id: doc.id,
+    title: doc.title,
+    status: doc.status,
+    createdAt: doc.createdAt,
+    updatedAt: doc.updatedAt,
+    completedAt: doc.completedAt,
+    recipients: doc.recipients.map((recipient) => ({
+      email: recipient.email,
+      name: recipient.name,
+      role: recipient.role,
+      signingStatus: recipient.signingStatus,
+      token: recipient.token,
+      signedAt: recipient.signedAt,
+    })),
+  }));
 
-  const data = await response.json();
-
-  return data as DocumentsResponse;
+  return {
+    data,
+    count: response.count,
+  };
 };
