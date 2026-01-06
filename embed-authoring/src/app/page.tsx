@@ -27,24 +27,20 @@ import { ViewDocument } from "./view-document";
 async function getDocumentUrlAction(documentId: number): Promise<string> {
 	"use server";
 
-	const host = process.env.DOCUMENSO_HOST || "https://app.documenso.com";
-
-	return await getDocument(host, documentId);
+	return await getDocument(documentId);
 }
 
 async function sendDocumentAction(documentId: number): Promise<void> {
 	"use server";
 
-	const host = process.env.DOCUMENSO_HOST || "https://app.documenso.com";
-
-	return await sendDocument(host, documentId);
+	return await sendDocument(documentId);
 }
 
 export default async function Dashboard() {
 	const host = process.env.DOCUMENSO_HOST || "https://app.documenso.com";
-	const presignToken = await createPresignToken(host);
+	const presignToken = await createPresignToken();
 
-	const { data: documents } = await findDocuments(host);
+	const { data: documents } = await findDocuments();
 
 	const getStatusVariant = (
 		status: DocumentsResponse["data"][number]["status"],
