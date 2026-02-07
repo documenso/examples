@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vendor Service Agreement</title>
+    <style>
+        @page {
+            size: letter;
+            margin: 1in;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            color: #1a1a1a;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #2563eb;
+        }
+
+        .header h1 {
+            font-size: 24pt;
+            color: #1e40af;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .header .subtitle {
+            font-size: 10pt;
+            color: #6b7280;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 12pt;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 12px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px 30px;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 8px;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: #4b5563;
+            min-width: 140px;
+        }
+
+        .info-value {
+            color: #1a1a1a;
+        }
+
+        .terms-box {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .terms-box h3 {
+            font-size: 11pt;
+            margin-bottom: 10px;
+            color: #374151;
+        }
+
+        .terms-box p {
+            font-size: 10pt;
+            color: #4b5563;
+            margin-bottom: 8px;
+        }
+
+        .service-description {
+            background-color: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .service-description p {
+            white-space: pre-wrap;
+        }
+
+        .agreement-text {
+            margin-top: 20px;
+            font-size: 10pt;
+            color: #374151;
+        }
+
+        .agreement-text p {
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+
+        .signature-section {
+            margin-top: 40px;
+            page-break-inside: avoid;
+        }
+
+        .signature-row {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+
+        .signature-block {
+            flex: 1;
+        }
+
+        .signature-placeholder {
+            height: 60px;
+            border: 1px dashed #9ca3af;
+            border-radius: 4px;
+            background-color: #f9fafb;
+            margin-bottom: 8px;
+            padding: 4px 8px;
+            position: relative;
+        }
+
+        .signature-placeholder span {
+            color: #9ca3af;
+            font-size: 8pt;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .signature-label {
+            font-size: 9pt;
+            color: #6b7280;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 15px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 9pt;
+            color: #9ca3af;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Vendor Service Agreement</h1>
+        <div class="subtitle">Generated on {{ generated_date }}</div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">Vendor Information</h2>
+        <div class="info-grid">
+            <div class="info-row">
+                <span class="info-label">Company Name:</span>
+                <span class="info-value">{{ company_name }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Contact Name:</span>
+                <span class="info-value">{{ contact_name }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Email:</span>
+                <span class="info-value">{{ email }}</span>
+            </div>
+            {% if phone %}
+            <div class="info-row">
+                <span class="info-label">Phone:</span>
+                <span class="info-value">{{ phone }}</span>
+            </div>
+            {% endif %}
+        </div>
+        {% if address or city or state or zip_code %}
+        <div class="info-row" style="margin-top: 10px;">
+            <span class="info-label">Address:</span>
+            <span class="info-value">
+                {% if address %}{{ address }}{% endif %}
+                {% if city %}, {{ city }}{% endif %}
+                {% if state %}, {{ state }}{% endif %}
+                {% if zip_code %} {{ zip_code }}{% endif %}
+            </span>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">Service Details</h2>
+        <div class="service-description">
+            <p>{{ service_description }}</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">Agreement Terms</h2>
+        <div class="info-grid">
+            <div class="info-row">
+                <span class="info-label">Pricing / Rate:</span>
+                <span class="info-value">{{ pricing }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Payment Terms:</span>
+                <span class="info-value">{{ payment_terms }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Start Date:</span>
+                <span class="info-value">{{ start_date }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Duration:</span>
+                <span class="info-value">{{ duration }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="terms-box">
+        <h3>Standard Terms and Conditions</h3>
+        <p>1. The Vendor agrees to provide the services described above in accordance with industry standards and best practices.</p>
+        <p>2. Payment shall be made according to the specified payment terms upon receipt of invoice.</p>
+        <p>3. Either party may terminate this agreement with 30 days written notice.</p>
+        <p>4. The Vendor shall maintain appropriate insurance coverage for the duration of this agreement.</p>
+        <p>5. All confidential information shared between parties shall remain protected.</p>
+    </div>
+
+    <div class="agreement-text">
+        <p>
+            By signing below, the Vendor acknowledges that they have read, understood, and agree to 
+            all terms and conditions outlined in this Service Agreement. The Vendor confirms that the 
+            information provided is accurate and complete.
+        </p>
+    </div>
+
+    <div class="signature-section">
+        <div class="signature-row">
+            <div class="signature-block">
+                <div class="signature-placeholder">
+                    <span>[SIGNATURE]</span>
+                </div>
+                <div class="signature-label">Vendor Signature</div>
+            </div>
+            <div class="signature-block">
+                <div class="signature-placeholder">
+                    <span>[DATE]</span>
+                </div>
+                <div class="signature-label">Date</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        This document was generated electronically and is valid with digital signature.
+    </div>
+</body>
+</html>
