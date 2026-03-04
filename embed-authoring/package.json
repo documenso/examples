@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@documenso/embed-react": "^0.2.2",
-    "@documenso/sdk-typescript": "^0.5.1",
+    "@documenso/sdk-typescript": "^0.8.0",
     "@hookform/resolvers": "^5.0.1",
     "@radix-ui/react-accordion": "^1.2.4",
     "@radix-ui/react-alert-dialog": "^1.1.7",
@@ -46,7 +46,7 @@
     "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.488.0",
-    "next": "15.3.0",
+    "next": "15.5.12",
     "next-themes": "^0.4.6",
     "react": "^19.0.0",
     "react-day-picker": "^8.10.1",
@@ -68,7 +68,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.3.0",
+    "eslint-config-next": "15.5.12",
     "prettier": "^3.5.3",
     "tailwindcss": "^4",
     "typescript": "^5"
