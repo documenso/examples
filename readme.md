@@ -6,7 +6,7 @@ Real-world examples demonstrating **Documenso's embedding capabilities** for int
 
 ## Examples
 
-### [Gym Membership Signup](./gym)
+### [Gym Membership Signup](./ts-nextjs-gym)
 
 **Embedding Feature**: `EmbedSignDocument` with signing tokens
 
@@ -16,7 +16,7 @@ Demonstrates embedding document signing using API-generated signing tokens. Show
 
 ---
 
-### [SaaS Sales Demo Scheduler](./saas-sales)
+### [SaaS Sales Demo Scheduler](./ts-nextjs-saas-sales)
 
 **Embedding Feature**: `EmbedDirectTemplate` for instant signing
 
@@ -26,7 +26,7 @@ Demonstrates direct template signing without backend document generation. Shows 
 
 ---
 
-### [Freelance Contract Platform](./freelance)
+### [Freelance Contract Platform](./ts-nextjs-freelance)
 
 **Embedding Feature**: Multi-party signing workflows
 
@@ -36,7 +36,7 @@ Demonstrates multi-recipient signing with sequential and parallel signing orders
 
 ---
 
-### [Document Authoring (Basic)](./embed-authoring)
+### [Document Authoring (Basic)](./ts-nextjs-embed-authoring)
 
 **Embedding Feature**: Document creation and editing embeds
 
@@ -46,13 +46,23 @@ Demonstrates embedding document authoring interfaces - creating and editing docu
 
 ---
 
-### [Document Authoring (Advanced)](./embed-authoring-advanced)
+### [Document Authoring (Advanced)](./ts-nextjs-embed-authoring-advanced)
 
 **Embedding Feature**: Advanced authoring with templates
 
 Demonstrates advanced authoring including template creation, custom React component packages, and multi-tab dashboard architecture.
 
 **Key Components**: `EmbedCreateTemplate`, `EmbedUpdateTemplate`, custom component package, dashboard patterns
+
+---
+
+### [Vendor Agreement](./python-flask-vendor-agreement)
+
+**Embedding Feature**: Dynamic PDF generation with embedded signing
+
+Demonstrates generating PDFs on-the-fly from form data and embedding the signing experience. Uses placeholder-based field positioning to automatically place signature fields where `[SIGNATURE]` and `[DATE]` text appears in the PDF.
+
+**Key Components**: `EmbedDirectTemplate`, Envelope API, placeholder field positioning
 
 ---
 
