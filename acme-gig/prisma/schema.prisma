@@ -1,0 +1,24 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model GigSession {
+  id            String   @id @default(cuid())
+  clientEmail   String
+  clientName    String
+  deliverables  String
+  deadline      String
+  budget        String
+  usageRights   String
+  clientToken   String?
+  clientSigned  Boolean  @default(false)
+  creatorToken  String?
+  creatorSigned Boolean  @default(false)
+  documentId    String?
+  createdAt     DateTime @default(now())
+}
