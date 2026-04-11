@@ -82,11 +82,25 @@ export function StartOnboardingDialog({
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
+          <div className="flex flex-col gap-4 py-2">
+            {employee ? (
+              <dl className="grid gap-3 rounded-3xl bg-muted/60 p-4 text-base/7 sm:grid-cols-2 sm:text-sm/6">
+                <div className="flex flex-col gap-1">
+                  <dt className="font-medium text-foreground">Role</dt>
+                  <dd className="text-muted-foreground">{employee.role}</dd>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <dt className="font-medium text-foreground">Start date</dt>
+                  <dd className="text-muted-foreground">{employee.startDate}</dd>
+                </div>
+              </dl>
+            ) : null}
+
+            <div className="flex flex-col gap-2">
               <Label htmlFor="email">Email Address</Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="alex@example.com"
                 value={email}
@@ -95,7 +109,9 @@ export function StartOnboardingDialog({
               />
             </div>
             {error && (
-              <p className="text-sm text-destructive">{error}</p>
+              <p className="text-base/7 text-destructive sm:text-sm/6">
+                {error}
+              </p>
             )}
           </div>
           <DialogFooter>
@@ -108,7 +124,7 @@ export function StartOnboardingDialog({
               Cancel
             </Button>
             <Button type="submit" disabled={loading || !email}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {loading ? <Loader2 className="size-4 animate-spin" /> : null}
               {loading ? "Creating documents..." : "Begin Onboarding"}
             </Button>
           </DialogFooter>

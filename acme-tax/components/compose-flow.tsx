@@ -3,10 +3,9 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { EmbedCreateEnvelopeV2 } from "@documenso/embed-react"
-import { ArrowLeft, CheckCircle, Loader2 } from "lucide-react"
 
 import { Button, buttonVariants } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
 import type { TaxClient } from "@/lib/mock-data"
 
 type Step = "loading" | "composing" | "sent"
@@ -46,42 +45,56 @@ export function ComposeFlow({
     <>
       <Link
         href={`/clients/${client.id}`}
-        className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+        className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
       >
-        <ArrowLeft className="h-4 w-4" />
         Back to {client.name}
       </Link>
 
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold">Send Custom Document</h2>
-        <p className="text-sm text-muted-foreground">
+      <div className="border-b border-border/70 pt-6 pb-8">
+        <p className="text-sm font-medium text-muted-foreground">
+          Custom document
+        </p>
+        <h1 className="mt-3 max-w-[24ch] text-4xl font-semibold tracking-tight text-balance">
+          Send a document for review and signature
+        </h1>
+        <p className="mt-3 max-w-[56ch] text-base text-pretty text-muted-foreground">
           Compose and send a document to {client.name}
         </p>
       </div>
 
       {step === "loading" && !error && (
-        <div className="flex h-[90dvh] items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <div className="flex min-h-[60dvh] flex-col items-center justify-center gap-4 text-center">
+          <div className="size-5 animate-spin rounded-full border-2 border-border border-t-foreground" />
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-foreground">
+              Preparing composer
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Creating a secure session for {client.name}.
+            </p>
+          </div>
         </div>
       )}
 
       {error && (
-        <Card className="mx-auto max-w-md">
-          <CardContent className="pt-6">
-            <p className="text-sm text-destructive">{error}</p>
-            <Button
-              variant="outline"
-              className="mt-4"
-              onClick={() => window.location.reload()}
-            >
-              Retry
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="mx-auto max-w-xs border-y border-border/70 py-8">
+          <p className="text-sm font-medium text-foreground">
+            Unable to start composer
+          </p>
+          <p className="mt-2 text-sm text-pretty text-destructive">{error}</p>
+          <Button
+            type="button"
+            variant="outline"
+            className="mt-4"
+            onClick={() => window.location.reload()}
+          >
+            Retry
+          </Button>
+        </div>
       )}
 
       {step === "composing" && (
-        <div className="overflow-hidden rounded-lg border">
+        <div className="mt-6 overflow-hidden rounded-[min(1vw,12px)] border border-border/70 bg-background">
           <EmbedCreateEnvelopeV2
             className="h-[90dvh] w-full"
             host={host}
@@ -94,17 +107,26 @@ export function ComposeFlow({
       )}
 
       {step === "sent" && (
-        <Card className="mx-auto max-w-md text-center">
-          <CardContent className="pt-8 pb-8">
-            <CheckCircle className="mx-auto mb-4 h-12 w-12 text-emerald-500" />
-            <h2 className="mb-2 text-xl font-semibold">Document Sent</h2>
-            <p className="mb-6 text-sm text-muted-foreground">
-              Your document has been sent to {client.name} for review and
-              signing.
+        <div className="flex min-h-[60dvh] flex-col items-center justify-center gap-6 text-center">
+          <div className="inline-flex h-8 items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 text-sm font-medium text-emerald-700">
+            Sent successfully
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-3xl font-semibold tracking-tight text-balance">
+              Document sent to {client.name}
+            </h2>
+            <p className="max-w-[48ch] text-base text-pretty text-muted-foreground">
+              The document is out for review and signature. You can return to
+              the client record whenever you are ready.
             </p>
-            <Link href={`/clients/${client.id}`} className={buttonVariants()}>Return to Client</Link>
-          </CardContent>
-        </Card>
+          </div>
+          <Link
+            href={`/clients/${client.id}`}
+            className={cn(buttonVariants(), "px-4")}
+          >
+            Return to client
+          </Link>
+        </div>
       )}
     </>
   )

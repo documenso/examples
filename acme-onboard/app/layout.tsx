@@ -34,7 +34,9 @@ export default function RootLayout({
       )}
     >
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <div className="isolate min-h-svh">{children}</div>
+        </ThemeProvider>
       </body>
     </html>
   )

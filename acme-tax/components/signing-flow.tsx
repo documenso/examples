@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { FileSpreadsheet, Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -56,32 +55,40 @@ export function SigningFlow({
   }
 
   return (
-    <div className="space-y-4 p-6">
-      <div className="flex items-center gap-2">
-        <FileSpreadsheet className="h-5 w-5" />
-        <h2 className="text-lg font-semibold">IRS Form 8879 — E-File Authorization</h2>
+    <div className="space-y-5 p-6 sm:p-7">
+      <div className="space-y-2">
+        <p className="text-sm font-medium text-muted-foreground">Form 8879</p>
+        <h2 className="max-w-[24ch] text-2xl font-semibold tracking-tight text-balance">
+          Send e-file authorization for signature
+        </h2>
+        <p className="max-w-[48ch] text-base text-pretty text-muted-foreground">
+          Confirm the signer email for {client.name}. This request is for the
+          2025 return.
+        </p>
       </div>
-      <p className="text-sm text-muted-foreground">
-        Send Form 8879 to {client.name} for electronic signature. Tax Year
-        2025.
-      </p>
-      <form onSubmit={handleSubmit} className="space-y-4">
+
+      <form onSubmit={handleSubmit} className="max-w-xs space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email">Signer Email</Label>
           <Input
             id="email"
+            name="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            className="max-sm:text-base/6"
           />
         </div>
-        {error && (
-          <p className="text-sm text-destructive">{error}</p>
-        )}
+        {error && <p className="text-sm text-destructive">{error}</p>}
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Send 8879 for Signing
+          {loading && (
+            <span
+              aria-hidden="true"
+              className="size-4 animate-spin rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground"
+            />
+          )}
+          Send 8879 for signing
         </Button>
       </form>
     </div>

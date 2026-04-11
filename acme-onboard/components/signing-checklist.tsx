@@ -2,7 +2,6 @@
 
 import { useState, useCallback } from "react"
 import { EmbedSignDocument } from "@documenso/embed-react"
-import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
@@ -113,108 +112,138 @@ export function SigningChecklist({
 
   if (allComplete) {
     return (
-      <div className="flex flex-col items-center gap-6 py-12">
-        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
-          <PartyPopper className="h-10 w-10 text-primary" />
+      <section className="flex flex-col gap-5 border-t border-border/60 pt-8">
+        <div className="flex items-center gap-2 text-base/7 text-primary sm:text-sm/6">
+          <PartyPopper className="size-4 shrink-0 stroke-primary" />
+          <span>Complete</span>
         </div>
-        <div className="text-center">
-          <h2 className="text-2xl font-semibold">Onboarding Complete!</h2>
-          <p className="mt-2 text-muted-foreground">
-            All documents have been signed successfully for{" "}
-            {session.employeeName}.
+        <div className="flex flex-col gap-2">
+          <h2 className="max-w-[35ch] text-2xl font-semibold tracking-tight text-balance sm:text-xl">
+            Onboarding complete
+          </h2>
+          <p className="max-w-[56ch] text-base/7 text-pretty text-muted-foreground sm:text-sm/6">
+            All documents have been signed successfully for {session.employeeName}.
           </p>
         </div>
-        <Progress value={100} className="h-3 w-full max-w-md" />
-        <p className="text-sm font-medium text-primary">3/3 documents signed</p>
-      </div>
+        <div className="flex flex-col gap-3">
+          <Progress value={100} className="h-2 w-full max-w-xl" />
+          <p className="text-base/7 font-medium tabular-nums text-foreground sm:text-sm/6">
+            3/3 documents signed
+          </p>
+        </div>
+      </section>
     )
   }
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">Signing progress</span>
-          <span className="font-medium">{signedCount}/3 documents signed</span>
+    <section className="flex flex-col gap-6 border-t border-border/60 pt-8">
+      <div className="flex flex-col gap-3 border-b border-border/60 pb-6">
+        <div className="flex flex-col gap-2">
+          <h2 className="text-2xl font-semibold tracking-tight text-balance sm:text-xl">
+            Signature checklist
+          </h2>
+          <p className="max-w-[56ch] text-base/7 text-pretty text-muted-foreground sm:text-sm/6">
+            Complete each document in order. The next item unlocks
+            automatically after the current signature finishes processing.
+          </p>
         </div>
-        <Progress value={progressPercent} className="h-3" />
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between gap-3 text-base/7 sm:text-sm/6">
+            <span className="text-muted-foreground">Progress</span>
+            <span className="font-medium tabular-nums text-foreground">
+              {signedCount}/3 signed
+            </span>
+          </div>
+          <Progress value={progressPercent} className="h-2" />
+        </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="flex flex-col">
         {steps.map((step, index) => {
           const active = isStepActive(steps, index)
           const locked = !step.signed && !active
           const signing = activeDoc === step.key
 
           return (
-            <div key={step.key} className="space-y-0">
-              <Card
+            <section
+              key={step.key}
+              className={cn(
+                "flex flex-col gap-0 border-t border-border/60 py-5 first:border-t-0 first:pt-0 last:pb-0",
+                signing && "pb-0",
+              )}
+            >
+              <div
                 className={cn(
-                  "transition-colors",
-                  active && "border-primary/50 bg-primary/5",
-                  step.signed && "border-primary/30 bg-primary/5",
-                  locked && "opacity-60",
+                  "rounded-3xl transition-colors",
+                  active && "bg-primary/[0.035]",
                 )}
               >
-                <CardContent className="flex items-center gap-4 p-4">
-                  <div
-                    className={cn(
-                      "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg",
-                      step.signed
-                        ? "bg-primary/10 text-primary"
-                        : active
-                          ? "bg-primary/10 text-primary"
-                          : "bg-muted text-muted-foreground",
-                    )}
-                  >
-                    {step.signed ? (
-                      <CheckCircle2 className="h-5 w-5" />
-                    ) : locked ? (
-                      <Lock className="h-5 w-5" />
-                    ) : (
-                      <FileText className="h-5 w-5" />
-                    )}
+                <div className="flex flex-col gap-4 px-4 py-4 sm:px-5 lg:flex-row lg:items-start lg:justify-between">
+                  <div className="flex min-w-0 gap-3">
+                    <div className="flex size-8 shrink-0 items-center justify-center rounded-full border border-border/70 text-base/7 font-medium tabular-nums text-foreground sm:text-sm/6">
+                      {index + 1}
+                    </div>
+                    <div className="flex min-w-0 flex-col gap-2">
+                      <div className="flex items-center gap-2 text-base/7 sm:text-sm/6">
+                        {step.signed ? (
+                          <CheckCircle2 className="size-4 shrink-0 stroke-primary" />
+                        ) : locked ? (
+                          <Lock className="size-4 shrink-0 stroke-muted-foreground" />
+                        ) : (
+                          <FileText className="size-4 shrink-0 stroke-foreground" />
+                        )}
+                        <p className="font-medium text-foreground">
+                          {step.label}
+                        </p>
+                      </div>
+                      <p className="max-w-[56ch] text-base/7 text-pretty text-muted-foreground sm:text-sm/6">
+                        {step.signed
+                          ? "Signed and recorded."
+                          : active
+                            ? "Ready for signature."
+                            : "Locked until the previous document is complete."}
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="min-w-0 flex-1">
-                    <p className="font-medium">{step.label}</p>
-                    <p className="text-sm text-muted-foreground">
+                  <div className="flex flex-col gap-3 lg:items-end">
+                    <Badge
+                      variant={step.signed ? "default" : "secondary"}
+                      className={cn(
+                        "w-fit",
+                        step.signed && "bg-primary text-primary-foreground",
+                      )}
+                    >
                       {step.signed
-                        ? "Signed and completed"
+                        ? "Signed"
                         : active
-                          ? "Ready to sign"
-                          : "Awaiting previous document"}
-                    </p>
-                  </div>
+                          ? "Ready"
+                          : "Pending"}
+                    </Badge>
 
-                  <div className="flex shrink-0 items-center gap-3">
-                    {step.signed ? (
-                      <Badge variant="default" className="bg-primary">
-                        Signed
-                      </Badge>
-                    ) : (
-                      <Badge variant="secondary">Pending</Badge>
-                    )}
-
-                    {active && !signing && (
+                    {active && !signing ? (
                       <Button
+                        type="button"
                         size="sm"
                         onClick={() => setActiveDoc(step.key)}
                         disabled={completing}
                       >
-                        Sign Now
+                        Sign now
                       </Button>
-                    )}
+                    ) : null}
 
-                    {signing && completing && (
-                      <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                    )}
+                    {signing && completing ? (
+                      <div className="flex items-center gap-2 text-base/7 text-muted-foreground sm:text-sm/6">
+                        <Loader2 className="size-4 animate-spin" />
+                        <span>Finishing signature…</span>
+                      </div>
+                    ) : null}
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
 
-              {signing && step.token && (
-                <div className="overflow-hidden rounded-b-lg border border-t-0">
+              {signing && step.token ? (
+                <div className="mt-4 overflow-hidden rounded-4xl bg-background ring-1 ring-border/70">
                   <EmbedSignDocument
                     token={step.token}
                     host={
@@ -231,11 +260,11 @@ export function SigningChecklist({
                     className="h-[600px] w-full"
                   />
                 </div>
-              )}
-            </div>
+              ) : null}
+            </section>
           )
         })}
       </div>
-    </div>
+    </section>
   )
 }
