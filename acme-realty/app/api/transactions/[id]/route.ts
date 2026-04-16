@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { db } from "@/lib/db"
+import { getDemoTransaction } from "@/lib/transactions"
 
 export async function GET(
   _request: Request,
@@ -8,9 +8,7 @@ export async function GET(
   const { id } = await params
 
   try {
-    const transaction = await db.transaction.findUnique({
-      where: { id },
-    })
+    const transaction = await getDemoTransaction(id)
 
     if (!transaction) {
       return NextResponse.json(
@@ -19,7 +17,26 @@ export async function GET(
       )
     }
 
-    return NextResponse.json(transaction)
+    return NextResponse.json({
+      id: transaction.id,
+      property: transaction.property,
+      price: transaction.price,
+      buyerName: transaction.buyerName,
+      sellerName: transaction.sellerName,
+      buyerToken: transaction.buyerToken,
+      buyerSigned: transaction.buyerSigned,
+      sellerToken: transaction.sellerToken,
+      sellerSigned: transaction.sellerSigned,
+      addendums: transaction.addendums.map((addendum) => ({
+        id: addendum.id,
+        title: addendum.title,
+        buyerToken: addendum.buyerToken,
+        sellerToken: addendum.sellerToken,
+        buyerSigned: addendum.buyerSigned,
+        sellerSigned: addendum.sellerSigned,
+        status: addendum.status,
+      })),
+    })
   } catch (error) {
     console.error("Failed to fetch transaction:", error)
     return NextResponse.json(

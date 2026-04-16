@@ -5,6 +5,9 @@ export type ScopeChange = {
 }
 
 export type DocumentRecord = {
+  envelopeId?: string
+  documentId?: number
+  scopeChangeId?: string
   name: string
   type: "SOW" | "Change Order" | "Invoice"
   date: string
@@ -138,6 +141,26 @@ export function getProject(id: string): Project | undefined {
   return projects.find((p) => p.id === id)
 }
 
+export function getProjectFromList(
+  source: Project[],
+  id: string
+): Project | undefined {
+  return source.find((project) => project.id === id)
+}
+
+export function getScopeChange(
+  project: Project,
+  scopeChangeId: string
+): ScopeChange | undefined {
+  return project.scopeChanges.find(
+    (scopeChange) => scopeChange.id === scopeChangeId
+  )
+}
+
+export function createInitialProjects(): Project[] {
+  return JSON.parse(JSON.stringify(projects)) as Project[]
+}
+
 export function formatCurrency(amount: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -145,4 +168,12 @@ export function formatCurrency(amount: number): string {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(amount)
+}
+
+export function formatDateLabel(date = new Date()): string {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(date)
 }

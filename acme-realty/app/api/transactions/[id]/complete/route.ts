@@ -1,3 +1,5 @@
+import { revalidatePath } from "next/cache"
+import { TransactionStatus } from "@prisma/client"
 import { NextResponse } from "next/server"
 import { db } from "@/lib/db"
 
@@ -44,11 +46,26 @@ export async function POST(
     }
 
     const field = PARTY_FIELD_MAP[body.party]
+    const nextBuyerSigned =
+      body.party === "buyer" ? true : transaction.buyerSigned
+    const nextSellerSigned =
+      body.party === "seller" ? true : transaction.sellerSigned
+    const nextStatus =
+      nextBuyerSigned && nextSellerSigned
+        ? TransactionStatus.UNDER_CONTRACT
+        : transaction.status
 
     const updated = await db.transaction.update({
       where: { id },
-      data: { [field]: true },
+      data: {
+        [field]: true,
+        status: nextStatus,
+      },
     })
+
+    revalidatePath("/")
+    revalidatePath(`/transactions/${id}`)
+    revalidatePath(`/transactions/${id}/sign`)
 
     return NextResponse.json({
       success: true,

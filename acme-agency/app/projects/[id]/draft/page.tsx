@@ -3,17 +3,20 @@
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Loader2, Paintbrush } from "lucide-react"
-import { unstable_EmbedCreateDocument as EmbedCreateDocument } from "@documenso/embed-react"
+import { EmbedCreateEnvelopeV2 } from "@documenso/embed-react"
+import { useProjectsState } from "@/hooks/use-project-state"
 
 export default function DraftSOWPage() {
   const params = useParams<{ id: string }>()
   const router = useRouter()
+  const { getProject, markSowSent } = useProjectsState()
   const [presignToken, setPresignToken] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [isRedirecting, setIsRedirecting] = useState(false)
 
   const host =
     process.env.NEXT_PUBLIC_DOCUMENSO_HOST || "https://app.documenso.com"
+  const project = getProject(params.id)
 
   useEffect(() => {
     async function fetchToken() {
@@ -26,53 +29,88 @@ export default function DraftSOWPage() {
         setError(err instanceof Error ? err.message : "Unknown error")
       }
     }
-    fetchToken()
-  }, [])
+    if (project && !presignToken && !error) {
+      fetchToken()
+    }
+  }, [error, presignToken, project])
+
+  if (!project) {
+    return (
+      <div className="mx-auto max-w-5xl px-6 py-10">
+        <p className="text-sm text-muted-foreground">Project not found.</p>
+      </div>
+    )
+  }
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-12">
+    <div className="mx-auto max-w-5xl px-6 py-10">
       <Link
         href={`/projects/${params.id}`}
-        className="text-muted-foreground hover:text-foreground mb-6 inline-flex items-center gap-1.5 text-sm transition-colors"
+        className="text-sm text-muted-foreground hover:text-foreground"
       >
-        <ArrowLeft className="h-4 w-4" />
-        Back to Project
+        Back to project
       </Link>
 
-      <div className="mb-6 flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-          <Paintbrush className="h-5 w-5 text-primary" />
-        </div>
-        <div>
-          <h1 className="text-xl font-bold tracking-tight">
-            Draft Statement of Work
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            Compose the SOW, add the client as a recipient, then send.
-          </p>
-        </div>
-      </div>
+      <header className="mt-6 border-b border-zinc-950/10 pb-6 dark:border-white/10">
+        <p className="text-sm text-muted-foreground">{project.name}</p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-balance">
+          Draft statement of work
+        </h1>
+        <p className="mt-4 max-w-[56ch] text-base text-pretty text-muted-foreground">
+          Compose the statement of work, add the client as a recipient, then
+          send it for signature.
+        </p>
+      </header>
 
       {error && (
-        <div className="mb-4 rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
+        <div className="mt-6 rounded-lg border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive">
           {error}
         </div>
       )}
 
       {!presignToken && !error && (
-        <div className="flex h-[600px] items-center justify-center rounded-lg border">
-          <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
+        <div className="mt-6 flex min-h-[40rem] items-center justify-center rounded-xl border border-zinc-950/10 bg-muted/20 px-6 text-sm text-muted-foreground dark:border-white/10">
+          {isRedirecting ? "Preparing client signing…" : "Loading authoring…"}
         </div>
       )}
 
       {presignToken && (
-        <div className="overflow-hidden rounded-lg border">
-          <EmbedCreateDocument
-            className="h-[80dvh] w-full"
+        <div className="mt-6 overflow-hidden rounded-xl border border-zinc-950/10 bg-background dark:border-white/10">
+          <EmbedCreateEnvelopeV2
+            className="h-[80dvh] min-h-[42rem] w-full"
             host={host}
             presignToken={presignToken}
-            onDocumentCreated={() => {
-              router.push(`/projects/${params.id}`)
+            type="DOCUMENT"
+            onEnvelopeCreated={async ({ envelopeId }) => {
+              try {
+                setIsRedirecting(true)
+                setPresignToken(null)
+                const normalizedEnvelopeId = String(envelopeId)
+
+                const response = await fetch("/api/document-token", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ envelopeId: normalizedEnvelopeId }),
+                })
+
+                if (!response.ok) {
+                  throw new Error("Failed to prepare the SOW for signing")
+                }
+
+                const data = await response.json()
+
+                await markSowSent(project.id, {
+                  envelopeId: normalizedEnvelopeId,
+                  name: "Statement of Work",
+                })
+
+                router.push(
+                  `/projects/${params.id}/sign?token=${encodeURIComponent(data.signingToken)}&flow=sow&envelopeId=${encodeURIComponent(normalizedEnvelopeId)}`
+                )
+              } catch (err) {
+                setIsRedirecting(false)
+                setError(err instanceof Error ? err.message : "Unknown error")
+              }
             }}
           />
         </div>

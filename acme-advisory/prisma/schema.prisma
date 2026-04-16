@@ -9,6 +9,7 @@ datasource db {
 
 model ClientSession {
   id            String   @id @default(cuid())
+  prospectId    String   @unique
   clientName    String
   email         String
   aum           String
@@ -21,4 +22,7 @@ model ClientSession {
   advToken      String?
   advSigned     Boolean  @default(false)
   createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([pipelineStage, createdAt])
 }

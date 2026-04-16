@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Loader2, Send } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -13,33 +12,37 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { formatCurrency } from "@/lib/mock-data"
 
 type ScopeChangeActionsProps = {
   projectId: string
   projectName: string
+  clientName: string
+  clientEmail: string
+  scopeChangeId: string
   changeDescription: string
   budgetImpact: number
+  currentBudget: number
+  onDocumentCreated?: (documentId: number) => void
 }
 
 export function ScopeChangeActions({
   projectId,
   projectName,
+  clientName,
+  clientEmail,
+  scopeChangeId,
   changeDescription,
   budgetImpact,
+  currentBudget,
+  onDocumentCreated,
 }: ScopeChangeActionsProps) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   async function handleSend() {
-    if (!name.trim() || !email.trim()) return
-
     setLoading(true)
     setError(null)
 
@@ -48,20 +51,19 @@ export function ScopeChangeActions({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name,
-          email,
-          projectName,
-          changeDescription,
-          budgetImpact,
+          projectId,
+          scopeChangeId,
+          currentBudget,
         }),
       })
 
       if (!res.ok) throw new Error("Failed to create change order")
 
       const data = await res.json()
+      onDocumentCreated?.(data.documentId)
       setOpen(false)
       router.push(
-        `/projects/${projectId}/sign?token=${data.signingToken}`
+        `/projects/${projectId}/sign?token=${encodeURIComponent(data.signingToken)}&flow=change-order&documentId=${data.documentId}&scopeChangeId=${scopeChangeId}&amount=${budgetImpact}`
       )
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error")
@@ -72,51 +74,71 @@ export function ScopeChangeActions({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger>
-        <Button size="sm" variant="outline" className="shrink-0">
-          <Send className="mr-1.5 h-3.5 w-3.5" />
-          Send Change Order
-        </Button>
+      <DialogTrigger
+        render={
+          <Button size="sm" variant="outline" className="shrink-0 rounded-lg" />
+        }
+      >
+        Send change order
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Send Change Order</DialogTitle>
+          <DialogTitle>Send change order</DialogTitle>
           <DialogDescription>
-            {changeDescription} — {formatCurrency(budgetImpact)} budget impact
-            for {projectName}.
+            Create a change order for {projectName} and send it to the client
+            for signature.
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4 py-2">
-          <div className="space-y-2">
-            <Label htmlFor="co-name">Recipient Name</Label>
-            <Input
-              id="co-name"
-              placeholder="Jane Smith"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+        <div className="space-y-6 py-1">
+          <div className="space-y-1">
+            <p className="text-sm font-medium">{changeDescription}</p>
+            <p className="text-sm text-muted-foreground">
+              <span className="tabular-nums">
+                {formatCurrency(budgetImpact)}
+              </span>{" "}
+              will be added once the change order is signed.
+            </p>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="co-email">Recipient Email</Label>
-            <Input
-              id="co-email"
-              type="email"
-              placeholder="jane@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          {error && (
-            <p className="text-sm text-destructive">{error}</p>
-          )}
+
+          <dl className="grid gap-4 border-y border-zinc-950/10 py-4 text-sm dark:border-white/10">
+            <div className="flex items-start justify-between gap-4">
+              <dt className="font-medium text-foreground">Client</dt>
+              <dd className="text-right text-muted-foreground">
+                <span className="block text-foreground">{clientName}</span>
+                <span>{clientEmail}</span>
+              </dd>
+            </div>
+            <div className="flex items-center justify-between gap-4">
+              <dt className="font-medium text-foreground">Current budget</dt>
+              <dd className="text-muted-foreground tabular-nums">
+                {formatCurrency(currentBudget)}
+              </dd>
+            </div>
+            <div className="flex items-center justify-between gap-4">
+              <dt className="font-medium text-foreground">Change order</dt>
+              <dd className="text-muted-foreground tabular-nums">
+                {formatCurrency(budgetImpact)}
+              </dd>
+            </div>
+            <div className="flex items-center justify-between gap-4">
+              <dt className="font-medium text-foreground">
+                New total after signing
+              </dt>
+              <dd className="font-medium text-foreground tabular-nums">
+                {formatCurrency(currentBudget + budgetImpact)}
+              </dd>
+            </div>
+          </dl>
+
+          {error && <p className="text-sm text-destructive">{error}</p>}
         </div>
-        <DialogFooter>
+        <DialogFooter showCloseButton>
           <Button
             onClick={handleSend}
-            disabled={loading || !name.trim() || !email.trim()}
+            disabled={loading}
+            className="rounded-lg"
           >
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Send & Sign
+            {loading ? "Sending…" : "Send for signature"}
           </Button>
         </DialogFooter>
       </DialogContent>

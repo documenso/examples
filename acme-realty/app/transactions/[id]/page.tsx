@@ -1,288 +1,244 @@
-"use client"
-
-import { use, useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button, buttonVariants } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { AddendumStatus, TransactionStatus } from "@prisma/client"
+import { notFound } from "next/navigation"
+import { buttonVariants } from "@/components/ui/button-variants"
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog"
-import {
-  Building,
-  ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
   FileText,
-  FilePlus,
-  Send,
-  CheckCircle2,
-  Loader2,
+  FilePlus2,
 } from "lucide-react"
-import { TRANSACTIONS } from "@/lib/mock-data"
+import {
+  getDemoTransaction,
+  getTransactionStatusLabel,
+} from "@/lib/transactions"
+import { SendPurchaseAgreementDialog } from "@/components/send-purchase-agreement-dialog"
 
-const STATUS_LABELS: Record<string, string> = {
-  draft: "Draft",
-  under_contract: "Under Contract",
-  closed: "Closed",
-}
+export const dynamic = "force-dynamic"
 
-export default function TransactionDetailPage({
+export default async function TransactionDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>
 }) {
-  const { id } = use(params)
-  const router = useRouter()
-  const txn = TRANSACTIONS.find((t) => t.id === id)
+  const { id } = await params
+  const transaction = await getDemoTransaction(id)
 
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [buyerEmail, setBuyerEmail] = useState("")
-  const [sellerEmail, setSellerEmail] = useState("")
-  const [sending, setSending] = useState(false)
-
-  if (!txn) {
-    return (
-      <div className="flex min-h-svh items-center justify-center">
-        <p className="text-muted-foreground">Transaction not found</p>
-      </div>
-    )
+  if (!transaction) {
+    notFound()
   }
 
-  const isDraft = txn.status === "draft"
-  const isClosed = txn.status === "closed"
-
-  async function handleSendAgreement() {
-    setSending(true)
-    try {
-      const res = await fetch("/api/create-transaction", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          propertyAddress: txn!.property,
-          price: txn!.price,
-          buyerName: txn!.buyerName,
-          buyerEmail,
-          sellerName: txn!.sellerName,
-          sellerEmail,
-        }),
-      })
-
-      if (!res.ok) {
-        console.error("Failed to create transaction")
-        return
-      }
-
-      const data = await res.json()
-      router.push(`/transactions/${data.id}/sign`)
-    } catch (err) {
-      console.error("Error sending agreement:", err)
-    } finally {
-      setSending(false)
-    }
+  const isDraft = transaction.status === TransactionStatus.DRAFT
+  const isClosed = transaction.status === TransactionStatus.CLOSED
+  const purchaseAgreementSigned = transaction.buyerSigned && transaction.sellerSigned
+  const purchaseAgreementSent = Boolean(transaction.documentId)
+  const statusTone: Record<TransactionStatus, string> = {
+    [TransactionStatus.DRAFT]: "bg-zinc-400 dark:bg-zinc-500",
+    [TransactionStatus.UNDER_CONTRACT]: "bg-amber-500",
+    [TransactionStatus.CLOSED]: "bg-emerald-500",
   }
 
-  // Mock document list based on status
-  const documents = []
-  if (!isDraft) {
-    documents.push({
-      name: "Purchase Agreement",
-      signed: true,
-    })
-  }
-  if (isClosed) {
-    documents.push({
-      name: "Closing Disclosure",
-      signed: true,
-    })
-  }
+  const documents = [
+    ...(purchaseAgreementSent
+      ? [
+          {
+            id: "purchase-agreement",
+            name: "Purchase Agreement",
+            signed: purchaseAgreementSigned,
+            href: purchaseAgreementSigned
+              ? null
+              : `/transactions/${transaction.id}/sign`,
+            statusLabel: purchaseAgreementSigned
+              ? "Completed"
+              : "Awaiting signatures",
+          },
+        ]
+      : []),
+    ...transaction.addendums.map((addendum) => ({
+      id: addendum.id,
+      name: addendum.title,
+      signed: addendum.status === AddendumStatus.COMPLETED,
+      href:
+        addendum.status === AddendumStatus.COMPLETED
+          ? null
+          : `/transactions/${transaction.id}/addendum?addendumId=${addendum.id}`,
+      statusLabel:
+        addendum.status === AddendumStatus.COMPLETED
+          ? "Completed"
+          : "Awaiting signatures",
+    })),
+  ]
 
   return (
-    <div className="mx-auto min-h-svh max-w-3xl p-6 md:p-10">
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
       <Link
         href="/"
-        className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
       >
-        <ArrowLeft className="h-4 w-4" />
-        Back to Dashboard
+        <ChevronLeft className="size-4 shrink-0" />
+        Back to transactions
       </Link>
 
-      <div className="mb-8 flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-600/10">
-          <Building className="h-5 w-5 text-amber-600" />
-        </div>
-        <div className="flex-1">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            {txn.property}
+      <section className="flex flex-col gap-5 border-b border-border/80 py-8 sm:flex-row sm:items-end sm:justify-between">
+        <div className="space-y-2">
+          <p className="text-sm font-medium text-muted-foreground">
+            Transaction file
+          </p>
+          <h1 className="max-w-[18ch] text-4xl font-semibold tracking-tight text-balance">
+            {transaction.property}
           </h1>
-          <p className="text-sm text-muted-foreground">{txn.price}</p>
+          <p className="text-base text-pretty text-muted-foreground tabular-nums">
+            {transaction.price}
+          </p>
         </div>
-        <Badge
-          variant={isClosed ? "default" : "secondary"}
-          className={
-            isClosed
-              ? "bg-emerald-600 text-white"
-              : txn.status === "under_contract"
-                ? "bg-amber-600/10 text-amber-600"
-                : ""
-          }
-        >
-          {STATUS_LABELS[txn.status]}
-        </Badge>
-      </div>
+        <div className="inline-flex items-center gap-2 text-sm font-medium text-foreground">
+          <span
+            aria-hidden="true"
+            className={`size-2 shrink-0 rounded-full ${statusTone[transaction.status]}`}
+          />
+          {getTransactionStatusLabel(transaction.status)}
+        </div>
+      </section>
 
-      <Card className="mb-6">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base">Parties</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-6 text-sm">
-            <div>
-              <p className="text-muted-foreground">Buyer</p>
-              <p className="font-medium">{txn.buyerName}</p>
-              {txn.buyerEmail && (
-                <p className="text-muted-foreground">{txn.buyerEmail}</p>
-              )}
+      <section className="grid gap-10 py-8 lg:grid-cols-[19fr_13fr]">
+        <div className="space-y-8">
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <h2 className="text-lg font-semibold text-foreground">Parties</h2>
+              <p className="text-sm text-pretty text-muted-foreground">
+                Contact information used for signature routing and follow-up.
+              </p>
             </div>
-            <div>
-              <p className="text-muted-foreground">Seller</p>
-              <p className="font-medium">{txn.sellerName}</p>
-              {txn.sellerEmail && (
-                <p className="text-muted-foreground">{txn.sellerEmail}</p>
-              )}
-            </div>
+            <dl className="divide-y divide-border/80 border-y border-border/80">
+              <div className="grid gap-2 py-4 sm:grid-cols-[120px_1fr] sm:gap-6">
+                <dt className="text-sm font-medium text-foreground">Buyer</dt>
+                <dd className="space-y-1 text-sm text-muted-foreground">
+                  <p className="text-foreground">{transaction.buyerName}</p>
+                  <p>{transaction.buyerEmail ?? "No email on file"}</p>
+                </dd>
+              </div>
+              <div className="grid gap-2 py-4 sm:grid-cols-[120px_1fr] sm:gap-6">
+                <dt className="text-sm font-medium text-foreground">Seller</dt>
+                <dd className="space-y-1 text-sm text-muted-foreground">
+                  <p className="text-foreground">{transaction.sellerName}</p>
+                  <p>{transaction.sellerEmail ?? "No email on file"}</p>
+                </dd>
+              </div>
+            </dl>
           </div>
-        </CardContent>
-      </Card>
 
-      <Card className="mb-6">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <FileText className="h-4 w-4" />
-            Documents
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {documents.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              No documents yet. Send a purchase agreement to get started.
-            </p>
-          ) : (
-            <div className="space-y-3">
-              {documents.map((doc) => (
-                <div
-                  key={doc.name}
-                  className="flex items-center justify-between rounded-lg border p-3"
-                >
-                  <div className="flex items-center gap-3">
-                    <FileText className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-medium">{doc.name}</span>
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <h2 className="text-lg font-semibold text-foreground">Documents</h2>
+              <p className="text-sm text-pretty text-muted-foreground">
+                Purchase agreements and custom addendums tied to this file.
+              </p>
+            </div>
+            {documents.length === 0 ? (
+              <div className="border-y border-border/80 py-6">
+                <p className="text-sm text-muted-foreground">
+                  No documents yet. Send the purchase agreement to begin the
+                  file.
+                </p>
+              </div>
+            ) : (
+              <div className="divide-y divide-border/80 border-y border-border/80">
+                {documents.map((document) => (
+                  <div
+                    key={document.id}
+                    className="grid gap-3 py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
+                  >
+                    <div className="space-y-1">
+                      <div className="inline-flex items-center gap-2 text-sm font-medium text-foreground">
+                        <FileText className="size-4 shrink-0" />
+                        {document.name}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4 sm:justify-self-end">
+                      <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+                        <span
+                          aria-hidden="true"
+                          className={`size-2 shrink-0 rounded-full ${
+                            document.signed ? "bg-emerald-500" : "bg-amber-500"
+                          }`}
+                        />
+                        {document.statusLabel}
+                      </div>
+
+                      {document.href ? (
+                        <Link
+                          href={document.href}
+                          className={buttonVariants({ variant: "outline", size: "sm" })}
+                        >
+                          Continue
+                        </Link>
+                      ) : null}
+                    </div>
                   </div>
-                  {doc.signed && (
-                    <Badge variant="default" className="bg-emerald-600 text-white">
-                      <CheckCircle2 className="mr-1 h-3 w-3" />
-                      Signed
-                    </Badge>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
 
-      <div className="flex gap-3">
-        {isDraft && (
-          <Button
-            onClick={() => setDialogOpen(true)}
-            className="bg-amber-600 hover:bg-amber-700"
-          >
-            <Send className="mr-2 h-4 w-4" />
-            Send Purchase Agreement
-          </Button>
-        )}
-        {!isClosed && (
-          <Link
-            href={`/transactions/${txn.id}/addendum`}
-            className={buttonVariants({ variant: "outline" })}
-          >
-            <FilePlus className="mr-2 h-4 w-4" />
-            Add Custom Addendum
-          </Link>
-        )}
-      </div>
-
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Send Purchase Agreement</DialogTitle>
-            <DialogDescription>
-              Enter email addresses for both parties to sign the purchase
-              agreement for {txn.property}.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4 py-2">
-            <div className="space-y-2">
-              <Label htmlFor="buyer-email">
-                Buyer Email ({txn.buyerName})
-              </Label>
-              <Input
-                id="buyer-email"
-                type="email"
-                placeholder="buyer@email.com"
-                value={buyerEmail}
-                onChange={(e) => setBuyerEmail(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="seller-email">
-                Seller Email ({txn.sellerName})
-              </Label>
-              <Input
-                id="seller-email"
-                type="email"
-                placeholder="seller@email.com"
-                value={sellerEmail}
-                onChange={(e) => setSellerEmail(e.target.value)}
-              />
-            </div>
+        <div className="space-y-4 border-t border-border/80 pt-8 lg:border-t-0 lg:border-l lg:border-border/80 lg:pl-8 lg:pt-0">
+          <div className="space-y-1">
+            <h2 className="text-lg font-semibold text-foreground">Next action</h2>
+            <p className="text-sm text-pretty text-muted-foreground">
+              Keep the file moving with the next highest-priority task.
+            </p>
           </div>
 
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setDialogOpen(false)}
-              disabled={sending}
+          <div className="flex flex-col gap-3">
+            {isDraft && !purchaseAgreementSent ? (
+              <SendPurchaseAgreementDialog
+                transactionId={transaction.id}
+                property={transaction.property}
+                buyerName={transaction.buyerName}
+                sellerName={transaction.sellerName}
+                buyerEmail={transaction.buyerEmail}
+                sellerEmail={transaction.sellerEmail}
+                className="w-full justify-start"
+              />
+            ) : null}
+
+            {!purchaseAgreementSigned && purchaseAgreementSent ? (
+              <Link
+                href={`/transactions/${transaction.id}/sign`}
+                className={buttonVariants({
+                  size: "default",
+                  className: "w-full justify-start",
+                })}
+              >
+                Continue Purchase Agreement
+              </Link>
+            ) : null}
+
+            {!isClosed ? (
+              <Link
+                href={`/transactions/${transaction.id}/addendum`}
+                className={buttonVariants({
+                  variant: "outline",
+                  size: "default",
+                  className: "w-full justify-start",
+                })}
+              >
+                <FilePlus2 className="size-4 shrink-0" />
+                Add custom addendum
+              </Link>
+            ) : null}
+
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
             >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleSendAgreement}
-              disabled={!buyerEmail || !sellerEmail || sending}
-              className="bg-amber-600 hover:bg-amber-700"
-            >
-              {sending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating...
-                </>
-              ) : (
-                <>
-                  <Send className="mr-2 h-4 w-4" />
-                  Send Agreement
-                </>
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+              View all transactions
+              <ChevronRight className="size-4 shrink-0" />
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

@@ -1,4 +1,6 @@
-export interface Transaction {
+import { TransactionStatus } from "@prisma/client"
+
+export interface DemoTransactionSeed {
   id: string
   property: string
   price: string
@@ -10,11 +12,11 @@ export interface Transaction {
   buyerSigned: boolean
   sellerToken: string | null
   sellerSigned: boolean
-  documentId: string | null
-  status: "draft" | "under_contract" | "closed"
+  documentId: number | null
+  status: TransactionStatus
 }
 
-export const TRANSACTIONS: Transaction[] = [
+export const DEMO_TRANSACTIONS: DemoTransactionSeed[] = [
   {
     id: "txn-001",
     property: "142 Oak Lane",
@@ -28,7 +30,7 @@ export const TRANSACTIONS: Transaction[] = [
     sellerToken: null,
     sellerSigned: false,
     documentId: null,
-    status: "draft",
+    status: TransactionStatus.DRAFT,
   },
   {
     id: "txn-002",
@@ -42,8 +44,8 @@ export const TRANSACTIONS: Transaction[] = [
     buyerSigned: true,
     sellerToken: null,
     sellerSigned: true,
-    documentId: "doc-002",
-    status: "under_contract",
+    documentId: 1002,
+    status: TransactionStatus.UNDER_CONTRACT,
   },
   {
     id: "txn-003",
@@ -57,7 +59,7 @@ export const TRANSACTIONS: Transaction[] = [
     buyerSigned: true,
     sellerToken: null,
     sellerSigned: true,
-    documentId: "doc-003",
-    status: "closed",
+    documentId: 1003,
+    status: TransactionStatus.CLOSED,
   },
 ]

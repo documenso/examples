@@ -7,18 +7,52 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum TransactionStatus {
+  DRAFT
+  UNDER_CONTRACT
+  CLOSED
+}
+
+enum AddendumStatus {
+  SENT
+  COMPLETED
+}
+
 model Transaction {
-  id           String   @id @default(cuid())
+  id           String            @id
   property     String
   price        String
-  buyerName    String
-  sellerName   String
-  buyerEmail   String?
-  sellerEmail  String?
-  buyerToken   String?
-  buyerSigned  Boolean  @default(false)
-  sellerToken  String?
-  sellerSigned Boolean  @default(false)
-  documentId   String?
-  createdAt    DateTime @default(now())
+  buyerName    String            @map("buyer_name")
+  sellerName   String            @map("seller_name")
+  buyerEmail   String?           @map("buyer_email")
+  sellerEmail  String?           @map("seller_email")
+  buyerToken   String?           @map("buyer_token")
+  buyerSigned  Boolean           @default(false) @map("buyer_signed")
+  sellerToken  String?           @map("seller_token")
+  sellerSigned Boolean           @default(false) @map("seller_signed")
+  documentId   Int?              @map("document_id")
+  status       TransactionStatus @default(DRAFT)
+  createdAt    DateTime          @default(now()) @map("created_at")
+  updatedAt    DateTime          @updatedAt @map("updated_at")
+  addendums    Addendum[]
+
+  @@map("transactions")
+}
+
+model Addendum {
+  id                  String         @id @default(cuid())
+  transactionId       String         @map("transaction_id")
+  transaction         Transaction    @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  title               String
+  documensoDocumentId String         @map("documenso_document_id")
+  buyerToken          String?        @map("buyer_token")
+  sellerToken         String?        @map("seller_token")
+  buyerSigned         Boolean        @default(false) @map("buyer_signed")
+  sellerSigned        Boolean        @default(false) @map("seller_signed")
+  status              AddendumStatus @default(SENT)
+  createdAt           DateTime       @default(now()) @map("created_at")
+  updatedAt           DateTime       @updatedAt @map("updated_at")
+
+  @@index([transactionId])
+  @@map("addendums")
 }
