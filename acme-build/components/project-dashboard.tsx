@@ -132,16 +132,16 @@ export function ProjectDashboard() {
   return (
     <div className="isolate min-h-svh bg-background">
       <div className="mx-auto flex max-w-6xl flex-col gap-12 px-6 py-10 lg:px-8">
-        <section className="grid gap-12 border-b border-zinc-950/5 pb-12 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,0.9fr)]">
+        <section className="grid gap-12 border-b border-border pb-12 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,0.9fr)]">
           <div className="flex flex-col gap-4">
-            <p className="text-base font-medium text-zinc-500 sm:text-sm">
+            <p className="text-base font-medium text-muted-foreground sm:text-sm">
               Construction payment control
             </p>
             <div className="flex flex-col gap-3">
               <h1 className="max-w-[24ch] text-4xl font-semibold tracking-tight text-balance">
                 {PROJECT_NAME}
               </h1>
-              <p className="max-w-[56ch] text-base text-pretty text-zinc-600 sm:text-sm">
+              <p className="max-w-[56ch] text-base text-pretty text-muted-foreground sm:text-sm">
                 Manage conditional lien waivers for the current draw, keep every
                 subcontractor moving, and release payment only after signing is
                 complete.
@@ -149,34 +149,34 @@ export function ProjectDashboard() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-6 border-t border-zinc-950/5 pt-5 lg:pl-10">
+          <div className="flex flex-col gap-6 border-t border-border pt-5 lg:pl-10">
             <div className="flex flex-col gap-2">
-              <p className="text-base font-medium text-zinc-500 sm:text-sm">
+              <p className="text-base font-medium text-muted-foreground sm:text-sm">
                 Current draw
               </p>
               <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                <p className="text-lg font-medium tabular-nums text-zinc-950 sm:text-base">
+                <p className="text-lg font-medium tabular-nums text-foreground sm:text-base">
                   {PAY_PERIOD.displayRange}
                 </p>
-                <p className="text-base text-zinc-500 sm:text-sm">
+                <p className="text-base text-muted-foreground sm:text-sm">
                   {PAY_PERIOD.label}
                 </p>
               </div>
             </div>
-            <dl className="grid gap-4 border-t border-zinc-950/5 pt-4">
+            <dl className="grid gap-4 border-t border-border pt-4">
               <div className="flex items-baseline justify-between gap-4">
-                <dt className="text-base font-medium text-zinc-500 sm:text-sm">
+                <dt className="text-base font-medium text-muted-foreground sm:text-sm">
                   Pending release
                 </dt>
-                <dd className="text-base font-medium tabular-nums text-zinc-950 sm:text-sm">
+                <dd className="text-base font-medium tabular-nums text-foreground sm:text-sm">
                   {formatCurrency(totalPending)}
                 </dd>
               </div>
               <div className="flex items-baseline justify-between gap-4">
-                <dt className="text-base font-medium text-zinc-500 sm:text-sm">
+                <dt className="text-base font-medium text-muted-foreground sm:text-sm">
                   Signed waivers
                 </dt>
-                <dd className="text-base font-medium tabular-nums text-zinc-950 sm:text-sm">
+                <dd className="text-base font-medium tabular-nums text-foreground sm:text-sm">
                   {signedCount} of {subs.length}
                 </dd>
               </div>
@@ -184,23 +184,23 @@ export function ProjectDashboard() {
           </div>
         </section>
 
-        <section className="grid gap-6 border-b border-zinc-950/5 pb-10 sm:grid-cols-3">
-          <div className="sm:pr-6 sm:[&:not(:first-child)]:border-l sm:[&:not(:first-child)]:border-zinc-950/5 sm:[&:not(:first-child)]:pl-6">
-            <p className="truncate text-base font-medium text-zinc-500 sm:text-sm">
+        <section className="grid gap-6 border-b border-border pb-10 sm:grid-cols-3">
+          <div className="sm:pr-6 sm:[&:not(:first-child)]:border-l sm:[&:not(:first-child)]:border-border sm:[&:not(:first-child)]:pl-6">
+            <p className="truncate text-base font-medium text-muted-foreground sm:text-sm">
               Total budget
             </p>
-            <p className="mt-3 text-3xl font-semibold tracking-tight tabular-nums text-zinc-950">
+            <p className="mt-3 text-3xl font-semibold tracking-tight tabular-nums text-foreground">
               {formatCurrency(PROJECT_BUDGET)}
             </p>
           </div>
-          <div className="border-t border-zinc-950/5 pt-6 sm:border-t-0 sm:px-6 sm:[&:not(:first-child)]:border-l sm:[&:not(:first-child)]:border-zinc-950/5">
-            <p className="truncate text-base font-medium text-zinc-500 sm:text-sm">
+          <div className="border-t border-border pt-6 sm:border-t-0 sm:px-6 sm:[&:not(:first-child)]:border-l sm:[&:not(:first-child)]:border-border">
+            <p className="truncate text-base font-medium text-muted-foreground sm:text-sm">
               Completion
             </p>
-            <p className="mt-3 text-3xl font-semibold tracking-tight tabular-nums text-zinc-950">
+            <p className="mt-3 text-3xl font-semibold tracking-tight tabular-nums text-foreground">
               {PROJECT_COMPLETION_PERCENT}%
             </p>
-            <div className="mt-4 h-2 rounded-full bg-zinc-950/8">
+            <div className="mt-4 h-2 rounded-full bg-muted">
               <div
                 className="h-2 w-(--completion) rounded-full bg-primary"
                 style={
@@ -211,14 +211,14 @@ export function ProjectDashboard() {
               />
             </div>
           </div>
-          <div className="border-t border-zinc-950/5 pt-6 sm:border-t-0 sm:pl-6 sm:[&:not(:first-child)]:border-l sm:[&:not(:first-child)]:border-zinc-950/5">
-            <p className="truncate text-base font-medium text-zinc-500 sm:text-sm">
+          <div className="border-t border-border pt-6 sm:border-t-0 sm:pl-6 sm:[&:not(:first-child)]:border-l sm:[&:not(:first-child)]:border-border">
+            <p className="truncate text-base font-medium text-muted-foreground sm:text-sm">
               Subcontractors
             </p>
-            <p className="mt-3 text-3xl font-semibold tracking-tight tabular-nums text-zinc-950">
+            <p className="mt-3 text-3xl font-semibold tracking-tight tabular-nums text-foreground">
               {subs.length}
             </p>
-            <p className="mt-2 text-base text-pretty text-zinc-600 sm:text-sm">
+            <p className="mt-2 text-base text-pretty text-muted-foreground sm:text-sm">
               {signedCount} signed and ready to release.
             </p>
           </div>
@@ -229,7 +229,7 @@ export function ProjectDashboard() {
             <h2 className="max-w-[30ch] text-2xl font-semibold tracking-tight text-balance">
               Subcontractor releases
             </h2>
-            <p className="max-w-[56ch] text-base text-pretty text-zinc-600 sm:text-sm">
+            <p className="max-w-[56ch] text-base text-pretty text-muted-foreground sm:text-sm">
               Create waivers, route each subcontractor into embedded signing,
               and keep payment status aligned with document completion for pay
               period {PAY_PERIOD.displayRange}.
@@ -240,23 +240,23 @@ export function ProjectDashboard() {
             <div className="inline-block min-w-full px-6 py-2 align-middle lg:px-8">
               <table className="w-full text-left text-base sm:text-sm">
                 <thead>
-                  <tr className="border-b border-zinc-950/10">
-                    <th className="h-12 pr-4 font-medium whitespace-nowrap text-zinc-500">
+                  <tr className="border-b border-border">
+                    <th className="h-12 pr-4 font-medium whitespace-nowrap text-muted-foreground">
                       Subcontractor
                     </th>
-                    <th className="h-12 px-4 font-medium whitespace-nowrap text-zinc-500">
+                    <th className="h-12 px-4 font-medium whitespace-nowrap text-muted-foreground">
                       Trade
                     </th>
-                    <th className="h-12 px-4 text-right font-medium whitespace-nowrap text-zinc-500">
+                    <th className="h-12 px-4 text-right font-medium whitespace-nowrap text-muted-foreground">
                       Amount
                     </th>
-                    <th className="h-12 px-4 font-medium whitespace-nowrap text-zinc-500">
+                    <th className="h-12 px-4 font-medium whitespace-nowrap text-muted-foreground">
                       Waiver
                     </th>
-                    <th className="h-12 px-4 font-medium whitespace-nowrap text-zinc-500">
+                    <th className="h-12 px-4 font-medium whitespace-nowrap text-muted-foreground">
                       Payment
                     </th>
-                    <th className="h-12 pl-4 text-right font-medium whitespace-nowrap text-zinc-500">
+                    <th className="h-12 pl-4 text-right font-medium whitespace-nowrap text-muted-foreground">
                       Action
                     </th>
                   </tr>
@@ -265,15 +265,15 @@ export function ProjectDashboard() {
                   {subs.map((sub) => (
                     <tr
                       key={sub.id}
-                      className="border-b border-zinc-950/5 transition-colors hover:bg-zinc-50/80"
+                      className="border-b border-border transition-colors hover:bg-muted/50"
                     >
-                      <td className="py-4 pr-4 align-middle font-medium text-zinc-950">
+                      <td className="py-4 pr-4 align-middle font-medium text-foreground">
                         {sub.name}
                       </td>
-                      <td className="px-4 py-4 align-middle text-zinc-600">
+                      <td className="px-4 py-4 align-middle text-muted-foreground">
                         {sub.trade}
                       </td>
-                      <td className="px-4 py-4 text-right align-middle font-medium tabular-nums text-zinc-950">
+                      <td className="px-4 py-4 text-right align-middle font-medium tabular-nums text-foreground">
                         {formatCurrency(sub.amount)}
                       </td>
                       <td className="px-4 py-4 align-middle">
