@@ -83,6 +83,7 @@ export async function GET(request: NextRequest) {
 			{ status: 500 },
 		);
 	}
+}
 
 export async function POST(request: NextRequest) {
 	try {

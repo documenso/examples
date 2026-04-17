@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import type { DocumentsResponse } from "@/lib/find-documents";
 import { EmbedSignDocument } from "@documenso/embed-react";
-import { unstable_EmbedUpdateDocument as EmbedUpdateDocument } from "@documenso/embed-react";
+import { EmbedUpdateEnvelopeV2 } from "@documenso/embed-react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/sonner";
 import { embedCssVars } from "@/lib/embed-css-vars";
@@ -32,7 +32,7 @@ interface DocumentPreviewProps {
   documents: DocumentsResponse["data"];
   host: string;
   presignToken: string;
-  getDocumentUrl: (documentId: number) => Promise<string>;
+  getDocumentUrl: (documentId: string) => Promise<string>;
 }
 
 export function DocumentPreview({
@@ -74,7 +74,7 @@ export function DocumentPreview({
     }
   }, [displayDocument, getDocumentUrl]);
 
-  const handleDocumentUpdated = () => {
+  const handleEnvelopeUpdated = () => {
     toast.success("Document updated successfully");
     router.refresh();
     setShowEdit(false);
@@ -225,14 +225,14 @@ export function DocumentPreview({
           </CardHeader>
           <CardContent>
             <div className="border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
-              <EmbedUpdateDocument
+              <EmbedUpdateEnvelopeV2
                 className="h-[600px] w-full"
                 host={host}
                 presignToken={presignToken}
-                documentId={displayDocument.id}
+                envelopeId={displayDocument.id}
                 darkModeDisabled={true}
                 cssVars={embedCssVars}
-                onDocumentUpdated={handleDocumentUpdated}
+                onEnvelopeUpdated={handleEnvelopeUpdated}
               />
             </div>
           </CardContent>

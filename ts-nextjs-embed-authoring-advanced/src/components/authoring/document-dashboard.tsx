@@ -12,7 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SendDocumentButton } from "@/components/authoring/send-document-button";
-import { unstable_EmbedUpdateDocument as EmbedUpdateDocument } from "@documenso/embed-react";
+import { EmbedUpdateEnvelopeV2 } from "@documenso/embed-react";
 import { toast } from "@/components/ui/sonner";
 import { X } from "lucide-react";
 import type { DocumentsResponse } from "@/lib/find-documents";
@@ -29,7 +29,7 @@ interface DocumentDashboardProps {
   };
   host: string;
   presignToken: string;
-  sendDocument: (documentId: number) => Promise<void>;
+  sendDocument: (documentId: string) => Promise<void>;
 }
 
 export function DocumentDashboard({
@@ -108,7 +108,7 @@ export function DocumentDashboard({
     )
     .slice(0, 5);
 
-  const handleDocumentUpdated = () => {
+  const handleEnvelopeUpdated = () => {
     toast.success("Document updated successfully");
     router.refresh();
     setEditingDocument(null);
@@ -139,14 +139,14 @@ export function DocumentDashboard({
         </CardHeader>
         <CardContent>
           <div className="border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
-            <EmbedUpdateDocument
+            <EmbedUpdateEnvelopeV2
               className="h-[1220px] w-full"
               host={host}
               presignToken={presignToken}
-              documentId={editingDocument.id}
+              envelopeId={editingDocument.id}
               darkModeDisabled={true}
               cssVars={embedCssVars}
-              onDocumentUpdated={handleDocumentUpdated}
+              onEnvelopeUpdated={handleEnvelopeUpdated}
             />
           </div>
         </CardContent>

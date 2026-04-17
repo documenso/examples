@@ -16,7 +16,7 @@
     "seed": "bun prisma/seed.ts"
   },
   "dependencies": {
-    "@documenso/embed-react": "^0.3.0",
+    "@documenso/embed-react": "^0.6.1",
     "@documenso/sdk-typescript": "^0.8.0",
     "@hookform/resolvers": "^3.10.0",
     "@libsql/client": "^0.15.15",

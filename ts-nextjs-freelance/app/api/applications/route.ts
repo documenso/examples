@@ -130,6 +130,9 @@ export async function POST(request: NextRequest) {
 						rating: true,
 						completedJobs: true,
 						hourlyRate: true,
+					},
+				},
+			},
 		});
 		await prisma.job.update({
 			where: { id: jobId },
@@ -137,6 +140,7 @@ export async function POST(request: NextRequest) {
 				applicants: {
 					increment: 1,
 				},
+			},
 		});
 
 		const transformedApplication = {

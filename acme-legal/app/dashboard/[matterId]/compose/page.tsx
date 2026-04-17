@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
-import { unstable_EmbedCreateDocument as EmbedCreateEnvelope } from "@documenso/embed-react"
+import { EmbedCreateEnvelopeV2 } from "@documenso/embed-react"
 import { ArrowLeft01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { AppHeader } from "@/components/app-header"
@@ -97,12 +97,13 @@ export default function ComposePage() {
         )}
 
         {presignToken && (
-          <EmbedCreateEnvelope
+          <EmbedCreateEnvelopeV2
             className="h-[80dvh] w-full"
             host={host}
             presignToken={presignToken}
             externalId={matter.id}
-            onDocumentCreated={() => setCreated(true)}
+            type="DOCUMENT"
+            onEnvelopeCreated={() => setCreated(true)}
           />
         )}
       </div>

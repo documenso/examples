@@ -24,13 +24,13 @@ import { SendDocument } from "./send-document";
 import { UpdateDocument } from "./update-document";
 import { ViewDocument } from "./view-document";
 
-async function getDocumentUrlAction(documentId: number): Promise<string> {
+async function getDocumentUrlAction(documentId: string): Promise<string> {
 	"use server";
 
 	return await getDocument(documentId);
 }
 
-async function sendDocumentAction(documentId: number): Promise<void> {
+async function sendDocumentAction(documentId: string): Promise<void> {
 	"use server";
 
 	return await sendDocument(documentId);
@@ -109,7 +109,7 @@ export default async function Dashboard() {
 
 														<UpdateDocument
 															host={host}
-															documentId={document.id}
+															envelopeId={document.id}
 															presignToken={presignToken}
 														/>
 													</div>
@@ -129,7 +129,7 @@ export default async function Dashboard() {
 														{document.status !== "COMPLETED" && (
 															<UpdateDocument
 																host={host}
-																documentId={document.id}
+																envelopeId={document.id}
 																presignToken={presignToken}
 															/>
 														)}

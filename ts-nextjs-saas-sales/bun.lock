@@ -5,7 +5,7 @@
     "": {
       "name": "saas-sales-demo",
       "dependencies": {
-        "@documenso/embed-react": "^0.3.0",
+        "@documenso/embed-react": "^0.6.1",
         "@hookform/resolvers": "^3.10.0",
         "@radix-ui/react-accordion": "1.2.2",
         "@radix-ui/react-alert-dialog": "1.1.4",
@@ -77,7 +77,7 @@
 
     "@date-fns/tz": ["@date-fns/tz@1.2.0", "", {}, "sha512-LBrd7MiJZ9McsOgxqWX7AaxrDjcFVjWH/tIKJd7pnR7McaslGYOP1QmmiBXdJH/H/yLCT+rcQ7FaPBUxRGUtrg=="],
 
-    "@documenso/embed-react": ["@documenso/embed-react@0.3.0", "", { "peerDependencies": { "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" } }, "sha512-A6yBPCZrlBhkkCU3PRxz07L5XkipgM3lU8WYhfidkD56KkFYrLQTtAXEotR1KJk0I1CoM9W7uml/zs281Qq2cQ=="],
+    "@documenso/embed-react": ["@documenso/embed-react@0.6.1", "", { "peerDependencies": { "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" } }, "sha512-xGHMF7G8nNWaD3FbQjEMdz0D6fU9oB8ibHo5U4qAKl76ijiVD5vzlvidXvNSxIUJLsuXIKQHCu0RUpsHZpkPNw=="],
 
     "@emnapi/runtime": ["@emnapi/runtime@1.8.1", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-mehfKSMWjjNol8659Z8KxEMrdSJDDot5SXMq00dM8BN4o+CLNXQ0xH2V7EchNHV4RmbZLmmPdEaXZc5H2FXmDg=="],
 

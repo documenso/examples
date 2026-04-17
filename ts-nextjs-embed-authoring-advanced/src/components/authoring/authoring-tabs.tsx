@@ -20,8 +20,8 @@ interface AuthoringTabsProps {
   selectedDocument: DocumentsResponse["data"][0] | null;
   host: string;
   presignToken: string;
-  getDocumentUrl: (documentId: number) => Promise<string>;
-  sendDocument: (documentId: number) => Promise<void>;
+  getDocumentUrl: (documentId: string) => Promise<string>;
+  sendDocument: (documentId: string) => Promise<void>;
   initialTab: string;
 }
 
