@@ -68,4 +68,19 @@ function ThemeHotkey() {
   return null
 }
 
-export { ThemeProvider }
+function ThemeToggle() {
+  const { resolvedTheme, setTheme } = useTheme()
+
+  return (
+    <button
+      type="button"
+      aria-label="Toggle theme"
+      className="inline-flex h-11 items-center justify-center rounded-lg px-4 text-base font-medium text-zinc-600 ring-1 ring-zinc-950/10 outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 sm:h-8 sm:px-3 sm:text-sm dark:text-zinc-300 dark:ring-white/10"
+      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+    >
+      {resolvedTheme === "dark" ? "Light" : "Dark"}
+    </button>
+  )
+}
+
+export { ThemeProvider, ThemeToggle }

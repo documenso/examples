@@ -1,18 +1,14 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
+import Link from "next/link"
 import { EmbedSignDocument } from "@documenso/embed-react"
-import {
-  Video,
-  Shield,
-  CheckCircle2,
-  Loader2,
-  Stamp,
-  User,
-} from "lucide-react"
-import { Badge } from "@/components/ui/badge"
+import { Video, CheckCircle2, Loader2, Stamp } from "lucide-react"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import type { NotarySession } from "@/lib/mock-data"
+import { getStoredSessionState, updateStoredSessionState } from "@/lib/session-state"
 
 interface VerificationCheck {
   label: string
@@ -23,6 +19,9 @@ export function SigningSession({ session }: { session: NotarySession }) {
   const [signingToken, setSigningToken] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [sealed, setSealed] = useState(false)
+  const [completedAt, setCompletedAt] = useState<string | null>(null)
+  const [envelopeId, setEnvelopeId] = useState<string | null>(null)
+  const [sessionReady, setSessionReady] = useState(false)
   const [checks, setChecks] = useState<VerificationCheck[]>([
     { label: "ID Verified", completed: false },
     { label: "Face Match", completed: false },
@@ -32,8 +31,26 @@ export function SigningSession({ session }: { session: NotarySession }) {
   const host =
     process.env.NEXT_PUBLIC_DOCUMENSO_HOST || "https://app.documenso.com"
 
+  useEffect(() => {
+    const storedSessionState = getStoredSessionState(session.id)
+
+    if (!storedSessionState?.envelopeId) {
+      setError("Prepare this session again to create an envelope before signing.")
+      return
+    }
+
+    setEnvelopeId(storedSessionState.envelopeId)
+    setSealed(storedSessionState.status === "completed")
+    setCompletedAt(storedSessionState.completedAt ?? null)
+    setSessionReady(true)
+  }, [session.id])
+
   // Auto-complete identity verification checks
   useEffect(() => {
+    if (!sessionReady) {
+      return
+    }
+
     const timers: NodeJS.Timeout[] = []
     checks.forEach((_, i) => {
       timers.push(
@@ -47,21 +64,25 @@ export function SigningSession({ session }: { session: NotarySession }) {
     return () => timers.forEach(clearTimeout)
     // Run once on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sessionReady])
 
   // Fetch signing token
   useEffect(() => {
+    if (!envelopeId) {
+      return
+    }
+
     async function fetchToken() {
       try {
         const res = await fetch("/api/generate-document", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            name: session.clientName,
+            envelopeId,
             email: session.clientEmail,
           }),
         })
-        if (!res.ok) throw new Error("Failed to generate document")
+        if (!res.ok) throw new Error("Failed to load the signing document")
         const data = await res.json()
         setSigningToken(data.signingToken)
       } catch (err) {
@@ -69,113 +90,186 @@ export function SigningSession({ session }: { session: NotarySession }) {
       }
     }
     fetchToken()
-  }, [session.clientName, session.clientEmail])
+  }, [envelopeId, session.clientEmail])
 
   const allChecksComplete = checks.every((c) => c.completed)
 
   const handleDocumentCompleted = useCallback(() => {
+    const nextCompletedAt = new Date().toISOString()
+
+    updateStoredSessionState(session.id, {
+      status: "completed",
+      completedAt: nextCompletedAt,
+    })
+
+    setCompletedAt(nextCompletedAt)
     setSealed(true)
-  }, [])
+  }, [session.id])
 
   return (
-    <div className="flex h-[calc(100svh-57px)] flex-col lg:flex-row">
-      {/* Left pane — Mock video call (40%) */}
-      <div className="flex w-full flex-col border-b bg-muted/30 p-4 lg:w-[40%] lg:border-b-0 lg:border-r">
-        {/* Video area */}
-        <div className="relative mb-4 flex aspect-video items-center justify-center overflow-hidden rounded-lg bg-zinc-800">
-          <Video className="h-12 w-12 text-zinc-500" />
-          <Badge className="absolute left-3 top-3 bg-red-600 text-white hover:bg-red-600">
-            Live
-          </Badge>
-          <div className="absolute bottom-3 left-3 flex items-center gap-2 rounded bg-black/60 px-2 py-1 text-xs text-white">
-            <User className="h-3 w-3" />
-            {session.clientName}
+    <div className="flex min-h-[calc(100svh-129px)] flex-col lg:grid lg:grid-cols-[360px_1fr]">
+      <section className="flex flex-col gap-8 border-b border-zinc-950/5 px-6 py-6 lg:border-r lg:border-b-0">
+        <div className="space-y-3">
+          <div className="relative flex aspect-video items-center justify-center overflow-hidden rounded-md bg-zinc-900">
+            <Video className="size-4 shrink-0 stroke-zinc-500" />
+            <div className="absolute inset-x-0 bottom-0 bg-black/50 px-3 py-2">
+              <p className="text-sm font-medium text-white">
+                {session.clientName}
+              </p>
+            </div>
           </div>
+          <p className="text-base/7 text-pretty text-zinc-500 sm:text-sm/6">
+            Complete the identity review, then finish the signature inside the
+            document viewer.
+          </p>
         </div>
 
-        {/* Identity Verification */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <Shield className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-            <h3 className="text-sm font-semibold">Identity Verification</h3>
-          </div>
-
-          <div className="space-y-2">
+        <div className="space-y-4">
+          <h2 className="text-base font-medium text-zinc-950 sm:text-sm">
+            Identity review
+          </h2>
+          <dl role="list" className="divide-y divide-zinc-950/5">
             {checks.map((check) => (
-              <div
-                key={check.label}
-                className="flex items-center gap-2 text-sm"
-              >
-                {check.completed ? (
-                  <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
-                ) : (
-                  <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                )}
+              <div key={check.label} className="flex items-start gap-3 py-3">
                 <span
                   className={cn(
-                    check.completed
-                      ? "text-foreground"
-                      : "text-muted-foreground"
+                    "mt-2 size-1.5 shrink-0 rounded-full",
+                    check.completed ? "bg-emerald-500" : "bg-amber-500"
                   )}
-                >
-                  {check.label}
-                </span>
+                  aria-hidden="true"
+                />
+                <div className="min-w-0 space-y-1">
+                  <dt className="text-base/6 font-medium text-zinc-950 sm:text-sm/6">
+                    {check.label}
+                  </dt>
+                  <dd className="text-base/6 text-zinc-500 sm:text-sm/6">
+                    {check.completed ? "Complete." : "In progress."}
+                  </dd>
+                </div>
               </div>
             ))}
-          </div>
+          </dl>
 
           {allChecksComplete && (
-            <Badge
-              variant="outline"
-              className="border-green-600 text-green-600 dark:border-green-400 dark:text-green-400"
-            >
-              <CheckCircle2 className="mr-1 h-3 w-3" />
-              Identity Verified
-            </Badge>
+            <p className="flex items-center gap-2 text-base/6 text-emerald-600 sm:text-sm/6">
+              <CheckCircle2 className="size-4 shrink-0 stroke-emerald-600" />
+              Identity verified.
+            </p>
           )}
         </div>
 
-        {/* Notary seal on completion */}
         {sealed && (
-          <div className="mt-auto flex flex-col items-center gap-2 pt-6">
-            <div className="animate-in zoom-in-50 duration-500 flex h-20 w-20 items-center justify-center rounded-full border-4 border-indigo-600 bg-indigo-50 dark:border-indigo-400 dark:bg-indigo-950">
-              <Stamp className="h-10 w-10 text-indigo-600 dark:text-indigo-400" />
+          <div className="mt-auto animate-in fade-in duration-500 border-t border-zinc-950/5 pt-4">
+            <div className="flex items-start gap-2">
+              <Stamp className="size-4 shrink-0 stroke-zinc-950" />
+              <div className="space-y-1">
+                <p className="text-base/6 font-medium text-zinc-950 sm:text-sm/6">
+                  Notary seal applied
+                </p>
+                <p className="text-sm tabular-nums text-zinc-500">
+                  {completedAt
+                    ? new Date(completedAt).toLocaleString()
+                    : new Date().toLocaleString()}
+                </p>
+              </div>
             </div>
-            <p className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">
-              Notary Seal Applied
-            </p>
-            <p className="text-xs text-muted-foreground">
-              {new Date().toLocaleString()}
-            </p>
           </div>
         )}
-      </div>
+      </section>
 
-      {/* Right pane — Signing document (60%) */}
-      <div className="flex min-h-0 w-full flex-col lg:w-[60%]">
+      <section className="min-h-0">
         {error ? (
-          <div className="flex flex-1 items-center justify-center p-6">
-            <p className="text-sm text-destructive">
-              Could not load document. Ensure DOCUMENSO_API_KEY and
-              DOCUMENSO_TEMPLATE_ID are configured.
-            </p>
+          <div className="flex h-full items-center justify-center px-6 py-12">
+            <Alert
+              variant="destructive"
+              className="max-w-md rounded-lg border-zinc-950/10"
+            >
+              <AlertTitle>Session unavailable</AlertTitle>
+              <AlertDescription className="space-y-3">
+                <p>{error}</p>
+                <Link
+                  href={`/sessions/${session.id}/prepare`}
+                  className={buttonVariants({ variant: "outline", size: "sm" })}
+                >
+                  Prepare Session
+                </Link>
+              </AlertDescription>
+            </Alert>
+          </div>
+        ) : sealed ? (
+          <div className="flex h-full items-center px-6 py-16">
+            <div className="w-full space-y-10">
+              <div className="space-y-4">
+                <p className="text-base/6 font-medium text-zinc-500 sm:text-sm/6">
+                  Session completed.
+                </p>
+                <div className="space-y-3">
+                  <h2 className="max-w-[16ch] text-4xl font-semibold tracking-tight text-balance text-zinc-950">
+                    Signed and sealed.
+                  </h2>
+                  <p className="max-w-[56ch] text-base/7 text-pretty text-zinc-500 sm:text-sm/6">
+                    The {session.documentType.toLowerCase()} for{" "}
+                    {session.clientName} has been completed and sealed by the
+                    notary.
+                  </p>
+                </div>
+              </div>
+
+              <dl
+                role="list"
+                className="grid gap-0 border-t border-zinc-950/5 pt-6 sm:grid-cols-2"
+              >
+                <div className="space-y-1 pb-4 sm:pr-8 sm:pb-0">
+                  <dt className="text-sm font-medium text-zinc-950">
+                    Signer
+                  </dt>
+                  <dd className="text-base/7 text-zinc-500 sm:text-sm/6">
+                    {session.clientName}
+                  </dd>
+                </div>
+                <div className="space-y-1 border-t border-zinc-950/5 pt-4 sm:border-t-0 sm:border-l sm:border-zinc-950/5 sm:pl-8 sm:pt-0">
+                  <dt className="text-sm font-medium text-zinc-950">
+                    Completed
+                  </dt>
+                  <dd className="text-base/7 tabular-nums text-zinc-500 sm:text-sm/6">
+                    {completedAt
+                      ? new Date(completedAt).toLocaleString()
+                      : new Date().toLocaleString()}
+                  </dd>
+                </div>
+              </dl>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <Link href="/" className={buttonVariants({ size: "sm" })}>
+                  Return to Sessions
+                </Link>
+                <Link
+                  href={`/sessions/${session.id}/prepare`}
+                  className={buttonVariants({ variant: "ghost", size: "sm" })}
+                >
+                  Review document
+                </Link>
+              </div>
+            </div>
           </div>
         ) : !signingToken ? (
-          <div className="flex flex-1 items-center justify-center">
-            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-            <span className="ml-2 text-sm text-muted-foreground">
+          <div className="flex h-full items-center justify-center gap-2 px-6 py-12">
+            <Loader2 className="size-4 shrink-0 animate-spin stroke-zinc-400" />
+            <p className="text-base/6 text-zinc-500 sm:text-sm/6">
               Loading document...
-            </span>
+            </p>
           </div>
         ) : (
-          <EmbedSignDocument
-            token={signingToken}
-            host={host}
-            onDocumentCompleted={handleDocumentCompleted}
-            className="h-full w-full flex-1"
-          />
+          <div className="h-full lg:border-l lg:border-zinc-950/5">
+            <EmbedSignDocument
+              token={signingToken}
+              host={host}
+              onDocumentCompleted={handleDocumentCompleted}
+              className="h-full min-h-[70dvh] w-full flex-1"
+            />
+          </div>
         )}
-      </div>
+      </section>
     </div>
   )
 }

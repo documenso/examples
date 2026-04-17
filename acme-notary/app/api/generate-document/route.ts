@@ -3,29 +3,53 @@ import { documenso } from "@/lib/documenso"
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    const templateId = Number(process.env.DOCUMENSO_TEMPLATE_ID)
+    const body = (await request.json()) as {
+      envelopeId?: string | number
+      email?: string
+    }
 
-    const template = await documenso.templates.get({ templateId })
-    const recipients = template.recipients.map((r) => ({
-      id: r.id,
-      name: body.name,
-      email: body.email,
-      signingOrder: r.signingOrder,
-      role: r.role,
-    }))
+    const envelopeId = String(body.envelopeId ?? "").trim()
 
-    const document = await documenso.templates.use({
-      templateId,
-      recipients,
-      distributeDocument: true,
+    if (!envelopeId) {
+      return NextResponse.json(
+        { error: "A valid envelopeId is required" },
+        { status: 400 }
+      )
+    }
+
+    const envelope = await documenso.envelopes.get({
+      envelopeId,
     })
 
-    const signingToken = document.recipients?.[0]?.token
+    let activeRecipients: Array<{ email: string; token?: string | null }> =
+      envelope.recipients
+
+    if (envelope.status === "DRAFT") {
+      const distributedEnvelope = await documenso.envelopes.distribute({
+        envelopeId,
+      })
+      activeRecipients = distributedEnvelope.recipients
+    }
+
+    const activeRecipient = body.email
+      ? activeRecipients.find(
+          (recipient) =>
+            recipient.email.toLowerCase() === body.email?.toLowerCase()
+        )
+      : undefined
+
+    const signingToken = activeRecipient?.token ?? activeRecipients[0]?.token
+
+    if (!signingToken) {
+      return NextResponse.json(
+        { error: "No signer token found for this envelope" },
+        { status: 400 }
+      )
+    }
 
     return NextResponse.json({
       signingToken,
-      documentId: document.id,
+      envelopeId,
     })
   } catch (error) {
     console.error("Generate document error:", error)

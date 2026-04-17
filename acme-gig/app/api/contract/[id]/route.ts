@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { db } from "@/lib/db"
+import { serializeGigSession } from "@/lib/gig-session"
 
 export async function GET(
   _request: NextRequest,
@@ -19,7 +20,7 @@ export async function GET(
       )
     }
 
-    return NextResponse.json(session)
+    return NextResponse.json(serializeGigSession(session))
   } catch (error) {
     console.error("Error fetching contract:", error)
     return NextResponse.json(

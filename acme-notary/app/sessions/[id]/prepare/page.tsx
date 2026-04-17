@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Stamp } from "lucide-react"
-import { buttonVariants } from "@/components/ui/button"
+import { ArrowLeft } from "lucide-react"
 import { getSession } from "@/lib/mock-data"
 import { PrepareDocument } from "@/components/prepare-document"
 
@@ -16,26 +15,30 @@ export default async function PreparePage({
 
   return (
     <div className="min-h-svh bg-background">
-      <header className="border-b bg-card">
-        <div className="mx-auto flex max-w-5xl items-center gap-3 px-6 py-4">
-          <Link href="/" className={buttonVariants({ variant: "ghost", size: "icon" })}>
-              <ArrowLeft className="h-4 w-4" />
+      <header className="border-b border-zinc-950/5">
+        <div className="mx-auto max-w-6xl px-6 py-5">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1 text-base/6 text-zinc-500 hover:text-zinc-950 sm:text-sm/6"
+          >
+            <ArrowLeft className="size-4 shrink-0" />
+            Sessions
           </Link>
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Stamp className="h-5 w-5" />
-          </div>
-          <div>
-            <h1 className="text-sm font-semibold tracking-tight">
-              Prepare Document
-            </h1>
-            <p className="text-xs text-muted-foreground">
-              {session.clientName} — {session.documentType}
-            </p>
+          <div className="mt-6 space-y-2">
+            <p className="text-sm font-medium text-zinc-950">Acme Notary</p>
+            <div className="space-y-1">
+              <h1 className="max-w-[20ch] text-3xl font-semibold tracking-tight text-balance text-zinc-950">
+                Prepare document
+              </h1>
+              <p className="max-w-[56ch] text-base/7 text-pretty text-zinc-500 sm:text-sm/6">
+                {session.clientName} · {session.documentType}
+              </p>
+            </div>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-5xl px-6 py-6">
+      <main className="mx-auto max-w-6xl px-6 py-8">
         <PrepareDocument session={session} />
       </main>
     </div>

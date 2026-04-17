@@ -24,7 +24,7 @@ export const sessions: NotarySession[] = [
     clientEmail: "michael.torres@example.com",
     documentType: "Affidavit",
     scheduledTime: "Today 3:30 PM",
-    status: "prepared",
+    status: "unprepared",
   },
   {
     id: "3",
