@@ -90,7 +90,7 @@ export function PrepareDocument({ session }: { session: NotarySession }) {
 
   if (error) {
     return (
-      <Alert variant="destructive" className="rounded-lg border-zinc-950/10">
+      <Alert variant="destructive" className="rounded-lg border-border">
         <AlertTitle>Error</AlertTitle>
         <AlertDescription>{error}</AlertDescription>
       </Alert>
@@ -107,10 +107,10 @@ export function PrepareDocument({ session }: { session: NotarySession }) {
               Ready for signing
             </p>
             <div className="space-y-2">
-              <h2 className="max-w-[20ch] text-3xl font-semibold tracking-tight text-balance text-zinc-950">
+              <h2 className="max-w-[20ch] text-3xl font-semibold tracking-tight text-balance text-foreground">
                 The document is prepared.
               </h2>
-              <p className="max-w-[56ch] text-base/7 text-pretty text-zinc-500 sm:text-sm/6">
+              <p className="max-w-[56ch] text-base/7 text-pretty text-muted-foreground sm:text-sm/6">
                 The {session.documentType.toLowerCase()} for {session.clientName}{" "}
                 has been prepared and can now move into the live notarization
                 session.
@@ -118,13 +118,13 @@ export function PrepareDocument({ session }: { session: NotarySession }) {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-x-6 gap-y-2 text-base/7 text-zinc-500 sm:text-sm/6">
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-base/7 text-muted-foreground sm:text-sm/6">
             <p>
-              <span className="font-medium text-zinc-950">Signer:</span>{" "}
+              <span className="font-medium text-foreground">Signer:</span>{" "}
               {session.clientName}
             </p>
             <p>
-              <span className="font-medium text-zinc-950">Document:</span>{" "}
+              <span className="font-medium text-foreground">Document:</span>{" "}
               {session.documentType}
             </p>
           </div>
@@ -139,7 +139,7 @@ export function PrepareDocument({ session }: { session: NotarySession }) {
             <span className="hidden text-sm text-zinc-300 sm:inline" aria-hidden="true">
               /
             </span>
-            <p className="text-base/6 text-zinc-500 sm:text-sm/6">
+            <p className="text-base/6 text-muted-foreground sm:text-sm/6">
               Continue when the signer is ready.
             </p>
           </div>
@@ -158,8 +158,8 @@ export function PrepareDocument({ session }: { session: NotarySession }) {
   if (!presignToken) {
     return (
       <div className="flex items-center justify-center gap-2 py-16">
-        <Loader2 className="size-4 shrink-0 animate-spin stroke-zinc-400" />
-        <p className="text-base/6 text-zinc-500 sm:text-sm/6">
+        <Loader2 className="size-4 shrink-0 animate-spin stroke-muted-foreground" />
+        <p className="text-base/6 text-muted-foreground sm:text-sm/6">
           Loading document editor...
         </p>
       </div>
@@ -169,8 +169,8 @@ export function PrepareDocument({ session }: { session: NotarySession }) {
   if (isPreparingSession) {
     return (
       <div className="flex items-center justify-center gap-2 py-16">
-        <Loader2 className="size-4 shrink-0 animate-spin stroke-zinc-400" />
-        <p className="text-base/6 text-zinc-500 sm:text-sm/6">
+        <Loader2 className="size-4 shrink-0 animate-spin stroke-muted-foreground" />
+        <p className="text-base/6 text-muted-foreground sm:text-sm/6">
           Sending document for signing...
         </p>
       </div>
@@ -180,24 +180,24 @@ export function PrepareDocument({ session }: { session: NotarySession }) {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <p className="max-w-[56ch] text-base/7 text-pretty text-zinc-500 sm:text-sm/6">
+        <p className="max-w-[56ch] text-base/7 text-pretty text-muted-foreground sm:text-sm/6">
           Upload a document for {session.clientName}, add the signer, place
           fields, and save when ready.
         </p>
-        <p className="max-w-[56ch] text-base/7 text-pretty text-zinc-500 sm:text-sm/6">
+        <p className="max-w-[56ch] text-base/7 text-pretty text-muted-foreground sm:text-sm/6">
           Need a sample file? Download the{" "}
         <a
           href="/power-of-attorney-sample.pdf"
           target="_blank"
           rel="noreferrer"
-          className="font-medium text-zinc-950 underline underline-offset-4"
+          className="font-medium text-foreground underline underline-offset-4"
         >
           sample Power of Attorney PDF
         </a>
           {" "}and upload it into authoring.
         </p>
       </div>
-      <div className="overflow-hidden rounded-lg border border-zinc-950/5">
+      <div className="overflow-hidden rounded-lg border border-border">
         {envelopeId ? (
           <EmbedUpdateEnvelope
             className="h-[75dvh] w-full"

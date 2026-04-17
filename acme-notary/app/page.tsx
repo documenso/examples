@@ -48,15 +48,15 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-svh bg-background">
-      <header className="border-b border-zinc-950/5">
+      <header className="border-b border-border">
         <div className="mx-auto flex max-w-6xl items-end justify-between gap-6 px-6 py-5">
           <div className="min-w-0">
-            <p className="text-sm font-medium text-zinc-950">Acme Notary</p>
-            <p className="text-base/6 text-zinc-500 sm:text-sm/6">
+            <p className="text-sm font-medium text-foreground">Acme Notary</p>
+            <p className="text-base/6 text-muted-foreground sm:text-sm/6">
               Remote online notarization.
             </p>
           </div>
-          <p className="text-right text-base/6 text-zinc-500 sm:text-sm/6">
+          <p className="text-right text-base/6 text-muted-foreground sm:text-sm/6">
             Four active client sessions.
           </p>
         </div>
@@ -64,10 +64,10 @@ export default function DashboardPage() {
 
       <main className="mx-auto max-w-6xl px-6 py-10">
         <div className="space-y-2">
-          <h1 className="max-w-[20ch] text-3xl font-semibold tracking-tight text-balance text-zinc-950">
+          <h1 className="max-w-[20ch] text-3xl font-semibold tracking-tight text-balance text-foreground">
             Sessions
           </h1>
-          <p className="max-w-[56ch] text-base/7 text-pretty text-zinc-500 sm:text-sm/6">
+          <p className="max-w-[56ch] text-base/7 text-pretty text-muted-foreground sm:text-sm/6">
             Prepare documents and conduct remote notarizations with a simpler,
             clearer workflow.
           </p>
@@ -77,25 +77,25 @@ export default function DashboardPage() {
           <div className="inline-block min-w-full px-6 py-2 align-middle">
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-zinc-950/5">
-                  <th className="py-3 pr-6 text-sm font-medium whitespace-nowrap text-zinc-500">
+                <tr className="border-b border-border">
+                  <th className="py-3 pr-6 text-sm font-medium whitespace-nowrap text-muted-foreground">
                     Client
                   </th>
-                  <th className="px-6 py-3 text-sm font-medium whitespace-nowrap text-zinc-500">
+                  <th className="px-6 py-3 text-sm font-medium whitespace-nowrap text-muted-foreground">
                     Document
                   </th>
-                  <th className="px-6 py-3 text-sm font-medium whitespace-nowrap text-zinc-500">
+                  <th className="px-6 py-3 text-sm font-medium whitespace-nowrap text-muted-foreground">
                     Scheduled
                   </th>
-                  <th className="px-6 py-3 text-sm font-medium whitespace-nowrap text-zinc-500">
+                  <th className="px-6 py-3 text-sm font-medium whitespace-nowrap text-muted-foreground">
                     Status
                   </th>
-                  <th className="py-3 pl-6 text-right text-sm font-medium whitespace-nowrap text-zinc-500">
+                  <th className="py-3 pl-6 text-right text-sm font-medium whitespace-nowrap text-muted-foreground">
                     Action
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-950/5">
+              <tbody className="divide-y divide-border">
                 {sessionList.map((session) => {
                   const config = statusConfig[session.status]
 
@@ -103,28 +103,28 @@ export default function DashboardPage() {
                     <tr key={session.id}>
                       <td className="py-4 pr-6 align-top">
                         <div className="space-y-1">
-                          <p className="text-base/6 font-medium text-zinc-950 sm:text-sm/6">
+                          <p className="text-base/6 font-medium text-foreground sm:text-sm/6">
                             {session.clientName}
                           </p>
-                          <p className="text-base/6 text-zinc-500 sm:text-sm/6">
+                          <p className="text-base/6 text-muted-foreground sm:text-sm/6">
                             {session.clientEmail}
                           </p>
                         </div>
                       </td>
                       <td className="px-6 py-4 align-top">
-                        <div className="flex items-center gap-2 text-base/6 text-zinc-950 sm:text-sm/6">
-                          <FileText className="size-4 h-lh shrink-0 stroke-zinc-400" />
+                        <div className="flex items-center gap-2 text-base/6 text-foreground sm:text-sm/6">
+                          <FileText className="size-4 h-lh shrink-0 stroke-muted-foreground" />
                           <span className="whitespace-nowrap">{session.documentType}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4 align-top">
-                        <div className="flex items-center gap-2 text-base/6 text-zinc-500 sm:text-sm/6">
-                          <Clock3 className="size-4 h-lh shrink-0 stroke-zinc-400" />
+                        <div className="flex items-center gap-2 text-base/6 text-muted-foreground sm:text-sm/6">
+                          <Clock3 className="size-4 h-lh shrink-0 stroke-muted-foreground" />
                           <span className="tabular-nums whitespace-nowrap">{session.scheduledTime}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4 align-top">
-                        <div className="flex items-center gap-2 text-base/6 text-zinc-950 sm:text-sm/6">
+                        <div className="flex items-center gap-2 text-base/6 text-foreground sm:text-sm/6">
                           <span
                             className={cn(
                               "size-1.5 shrink-0 rounded-full",
@@ -139,14 +139,14 @@ export default function DashboardPage() {
                         {config.href ? (
                           <Link
                             href={config.href(session.id)}
-                            className="inline-flex items-center gap-1 text-base/6 font-medium text-zinc-950 hover:underline sm:text-sm/6"
+                            className="inline-flex items-center gap-1 text-base/6 font-medium text-foreground hover:underline sm:text-sm/6"
                           >
                             {config.actionLabel}
                             <ArrowRight className="size-4 shrink-0" />
                           </Link>
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-base/6 text-zinc-500 sm:text-sm/6">
-                            <CheckCircle2 className="size-4 shrink-0 stroke-zinc-400" />
+                          <span className="inline-flex items-center gap-1 text-base/6 text-muted-foreground sm:text-sm/6">
+                            <CheckCircle2 className="size-4 shrink-0 stroke-muted-foreground" />
                             {config.actionLabel}
                           </span>
                         )}

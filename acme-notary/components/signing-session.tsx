@@ -108,27 +108,27 @@ export function SigningSession({ session }: { session: NotarySession }) {
 
   return (
     <div className="flex min-h-[calc(100svh-129px)] flex-col lg:grid lg:grid-cols-[360px_1fr]">
-      <section className="flex flex-col gap-8 border-b border-zinc-950/5 px-6 py-6 lg:border-r lg:border-b-0">
+      <section className="flex flex-col gap-8 border-b border-border px-6 py-6 lg:border-r lg:border-b-0">
         <div className="space-y-3">
-          <div className="relative flex aspect-video items-center justify-center overflow-hidden rounded-md bg-zinc-900">
-            <Video className="size-4 shrink-0 stroke-zinc-500" />
+          <div className="relative flex aspect-video items-center justify-center overflow-hidden rounded-md bg-muted">
+            <Video className="size-4 shrink-0 stroke-muted-foreground" />
             <div className="absolute inset-x-0 bottom-0 bg-black/50 px-3 py-2">
               <p className="text-sm font-medium text-white">
                 {session.clientName}
               </p>
             </div>
           </div>
-          <p className="text-base/7 text-pretty text-zinc-500 sm:text-sm/6">
+          <p className="text-base/7 text-pretty text-muted-foreground sm:text-sm/6">
             Complete the identity review, then finish the signature inside the
             document viewer.
           </p>
         </div>
 
         <div className="space-y-4">
-          <h2 className="text-base font-medium text-zinc-950 sm:text-sm">
+          <h2 className="text-base font-medium text-foreground sm:text-sm">
             Identity review
           </h2>
-          <dl role="list" className="divide-y divide-zinc-950/5">
+          <dl role="list" className="divide-y divide-border">
             {checks.map((check) => (
               <div key={check.label} className="flex items-start gap-3 py-3">
                 <span
@@ -139,10 +139,10 @@ export function SigningSession({ session }: { session: NotarySession }) {
                   aria-hidden="true"
                 />
                 <div className="min-w-0 space-y-1">
-                  <dt className="text-base/6 font-medium text-zinc-950 sm:text-sm/6">
+                  <dt className="text-base/6 font-medium text-foreground sm:text-sm/6">
                     {check.label}
                   </dt>
-                  <dd className="text-base/6 text-zinc-500 sm:text-sm/6">
+                  <dd className="text-base/6 text-muted-foreground sm:text-sm/6">
                     {check.completed ? "Complete." : "In progress."}
                   </dd>
                 </div>
@@ -159,14 +159,14 @@ export function SigningSession({ session }: { session: NotarySession }) {
         </div>
 
         {sealed && (
-          <div className="mt-auto animate-in fade-in duration-500 border-t border-zinc-950/5 pt-4">
+          <div className="mt-auto animate-in fade-in duration-500 border-t border-border pt-4">
             <div className="flex items-start gap-2">
-              <Stamp className="size-4 shrink-0 stroke-zinc-950" />
+              <Stamp className="size-4 shrink-0 stroke-foreground" />
               <div className="space-y-1">
-                <p className="text-base/6 font-medium text-zinc-950 sm:text-sm/6">
+                <p className="text-base/6 font-medium text-foreground sm:text-sm/6">
                   Notary seal applied
                 </p>
-                <p className="text-sm tabular-nums text-zinc-500">
+                <p className="text-sm tabular-nums text-muted-foreground">
                   {completedAt
                     ? new Date(completedAt).toLocaleString()
                     : new Date().toLocaleString()}
@@ -182,7 +182,7 @@ export function SigningSession({ session }: { session: NotarySession }) {
           <div className="flex h-full items-center justify-center px-6 py-12">
             <Alert
               variant="destructive"
-              className="max-w-md rounded-lg border-zinc-950/10"
+              className="max-w-md rounded-lg border-border"
             >
               <AlertTitle>Session unavailable</AlertTitle>
               <AlertDescription className="space-y-3">
@@ -200,14 +200,14 @@ export function SigningSession({ session }: { session: NotarySession }) {
           <div className="flex h-full items-center px-6 py-16">
             <div className="w-full space-y-10">
               <div className="space-y-4">
-                <p className="text-base/6 font-medium text-zinc-500 sm:text-sm/6">
+                <p className="text-base/6 font-medium text-muted-foreground sm:text-sm/6">
                   Session completed.
                 </p>
                 <div className="space-y-3">
-                  <h2 className="max-w-[16ch] text-4xl font-semibold tracking-tight text-balance text-zinc-950">
+                  <h2 className="max-w-[16ch] text-4xl font-semibold tracking-tight text-balance text-foreground">
                     Signed and sealed.
                   </h2>
-                  <p className="max-w-[56ch] text-base/7 text-pretty text-zinc-500 sm:text-sm/6">
+                  <p className="max-w-[56ch] text-base/7 text-pretty text-muted-foreground sm:text-sm/6">
                     The {session.documentType.toLowerCase()} for{" "}
                     {session.clientName} has been completed and sealed by the
                     notary.
@@ -217,21 +217,21 @@ export function SigningSession({ session }: { session: NotarySession }) {
 
               <dl
                 role="list"
-                className="grid gap-0 border-t border-zinc-950/5 pt-6 sm:grid-cols-2"
+                className="grid gap-0 border-t border-border pt-6 sm:grid-cols-2"
               >
                 <div className="space-y-1 pb-4 sm:pr-8 sm:pb-0">
-                  <dt className="text-sm font-medium text-zinc-950">
+                  <dt className="text-sm font-medium text-foreground">
                     Signer
                   </dt>
-                  <dd className="text-base/7 text-zinc-500 sm:text-sm/6">
+                  <dd className="text-base/7 text-muted-foreground sm:text-sm/6">
                     {session.clientName}
                   </dd>
                 </div>
-                <div className="space-y-1 border-t border-zinc-950/5 pt-4 sm:border-t-0 sm:border-l sm:border-zinc-950/5 sm:pl-8 sm:pt-0">
-                  <dt className="text-sm font-medium text-zinc-950">
+                <div className="space-y-1 border-t border-border pt-4 sm:border-t-0 sm:border-l sm:border-border sm:pl-8 sm:pt-0">
+                  <dt className="text-sm font-medium text-foreground">
                     Completed
                   </dt>
-                  <dd className="text-base/7 tabular-nums text-zinc-500 sm:text-sm/6">
+                  <dd className="text-base/7 tabular-nums text-muted-foreground sm:text-sm/6">
                     {completedAt
                       ? new Date(completedAt).toLocaleString()
                       : new Date().toLocaleString()}
@@ -254,13 +254,13 @@ export function SigningSession({ session }: { session: NotarySession }) {
           </div>
         ) : !signingToken ? (
           <div className="flex h-full items-center justify-center gap-2 px-6 py-12">
-            <Loader2 className="size-4 shrink-0 animate-spin stroke-zinc-400" />
-            <p className="text-base/6 text-zinc-500 sm:text-sm/6">
+            <Loader2 className="size-4 shrink-0 animate-spin stroke-muted-foreground" />
+            <p className="text-base/6 text-muted-foreground sm:text-sm/6">
               Loading document...
             </p>
           </div>
         ) : (
-          <div className="h-full lg:border-l lg:border-zinc-950/5">
+          <div className="h-full lg:border-l lg:border-border">
             <EmbedSignDocument
               token={signingToken}
               host={host}
