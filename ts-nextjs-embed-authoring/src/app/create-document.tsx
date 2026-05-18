@@ -1,6 +1,6 @@
 "use client";
 
-import { unstable_EmbedCreateDocument as EmbedCreateDocument } from "@documenso/embed-react";
+import { EmbedCreateEnvelopeV2 } from "@documenso/embed-react";
 import { Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type ReactNode, useState } from "react";
@@ -32,7 +32,7 @@ export const CreateDocument = ({
 
 	const [open, setOpen] = useState(false);
 
-	const handleDocumentCreated = () => {
+	const handleEnvelopeCreated = () => {
 		setOpen(false);
 
 		toast.success("Document created successfully");
@@ -56,11 +56,12 @@ export const CreateDocument = ({
 				</DialogHeader>
 
 				<div key={open ? "open" : "closed"} className="-mx-4 -mt-6">
-					<EmbedCreateDocument
+					<EmbedCreateEnvelopeV2
 						className="h-[80dvh] w-full"
 						host={host}
 						presignToken={presignToken}
-						onDocumentCreated={handleDocumentCreated}
+						type="DOCUMENT"
+						onEnvelopeCreated={handleEnvelopeCreated}
 					/>
 				</div>
 			</DialogContent>

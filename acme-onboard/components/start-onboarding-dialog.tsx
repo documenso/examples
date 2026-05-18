@@ -1,0 +1,135 @@
+"use client"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Loader2 } from "lucide-react"
+
+interface Employee {
+  name: string
+  role: string
+  startDate: string
+  salary: string
+}
+
+interface StartOnboardingDialogProps {
+  employee: Employee | null
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}
+
+export function StartOnboardingDialog({
+  employee,
+  open,
+  onOpenChange,
+}: StartOnboardingDialogProps) {
+  const router = useRouter()
+  const [email, setEmail] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!employee || !email) return
+
+    setLoading(true)
+    setError("")
+
+    try {
+      const res = await fetch("/api/start-onboarding", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          employeeName: employee.name,
+          email,
+          role: employee.role,
+          startDate: employee.startDate,
+          salary: employee.salary,
+        }),
+      })
+
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || "Failed to start onboarding")
+      }
+
+      const { sessionId } = await res.json()
+      router.push(`/onboarding/${sessionId}`)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong")
+      setLoading(false)
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Start Onboarding</DialogTitle>
+          <DialogDescription>
+            Enter the email address for {employee?.name} to begin the
+            onboarding process.
+          </DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit}>
+          <div className="flex flex-col gap-4 py-2">
+            {employee ? (
+              <dl className="grid gap-3 rounded-3xl bg-muted/60 p-4 text-base/7 sm:grid-cols-2 sm:text-sm/6">
+                <div className="flex flex-col gap-1">
+                  <dt className="font-medium text-foreground">Role</dt>
+                  <dd className="text-muted-foreground">{employee.role}</dd>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <dt className="font-medium text-foreground">Start date</dt>
+                  <dd className="text-muted-foreground">{employee.startDate}</dd>
+                </div>
+              </dl>
+            ) : null}
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="email">Email Address</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="alex@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            {error && (
+              <p className="text-base/7 text-destructive sm:text-sm/6">
+                {error}
+              </p>
+            )}
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={loading}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" disabled={loading || !email}>
+              {loading ? <Loader2 className="size-4 animate-spin" /> : null}
+              {loading ? "Creating documents..." : "Begin Onboarding"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  )
+}

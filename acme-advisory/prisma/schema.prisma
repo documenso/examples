@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ClientSession {
+  id            String   @id @default(cuid())
+  prospectId    String   @unique
+  clientName    String
+  email         String
+  aum           String
+  fee           String
+  pipelineStage String   @default("prospect")
+  imaToken      String?
+  imaSigned     Boolean  @default(false)
+  feeToken      String?
+  feeSigned     Boolean  @default(false)
+  advToken      String?
+  advSigned     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([pipelineStage, createdAt])
+}

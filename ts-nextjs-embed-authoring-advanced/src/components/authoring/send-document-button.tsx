@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
 interface SendDocumentButtonProps {
-  documentId: number;
-  sendDocument: (documentId: number) => Promise<void>;
+  documentId: string;
+  sendDocument: (documentId: string) => Promise<void>;
   disabled?: boolean;
 }
 

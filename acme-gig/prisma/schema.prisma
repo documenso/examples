@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum GigSessionStatus {
+  PENDING_CLIENT
+  PENDING_CREATOR
+  COMPLETED
+  REJECTED
+}
+
+model GigSession {
+  id                String           @id @default(cuid())
+  clientEmail       String           @map("client_email")
+  clientName        String           @map("client_name")
+  creatorEmail      String           @map("creator_email")
+  creatorName       String           @map("creator_name")
+  deliverables      String
+  deadline          String
+  budget            String
+  usageRights       String           @map("usage_rights")
+  clientRecipientId Int?             @map("client_recipient_id")
+  creatorRecipientId Int?            @map("creator_recipient_id")
+  clientToken       String?          @map("client_token")
+  creatorToken      String?          @map("creator_token")
+  clientSigned      Boolean          @default(false) @map("client_signed")
+  creatorSigned     Boolean          @default(false) @map("creator_signed")
+  clientSignedAt    DateTime?        @map("client_signed_at")
+  creatorSignedAt   DateTime?        @map("creator_signed_at")
+  status            GigSessionStatus @default(PENDING_CLIENT)
+  documentId        String?          @unique @map("document_id")
+  completedAt       DateTime?        @map("completed_at")
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt @map("updated_at")
+
+  @@map("gig_sessions")
+}

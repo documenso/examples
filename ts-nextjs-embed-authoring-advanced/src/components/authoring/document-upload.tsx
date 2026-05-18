@@ -7,8 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-// Remove when the update to the next version of the embeds is published
-import { unstable_EmbedCreateDocument as EmbedCreateDocument } from "../../../packages/react";
+import { EmbedCreateEnvelopeV2 } from "@documenso/embed-react";
 import { embedCssVars } from "@/lib/embed-css-vars";
 
 import { useRouter } from "next/navigation";
@@ -22,7 +21,7 @@ interface DocumentUploadProps {
 export function DocumentUpload({ host, presignToken }: DocumentUploadProps) {
   const router = useRouter();
 
-  const handleDocumentCreated = () => {
+  const handleEnvelopeCreated = () => {
     toast.success("Document created successfully");
     router.refresh();
   };
@@ -39,13 +38,14 @@ export function DocumentUpload({ host, presignToken }: DocumentUploadProps) {
         </CardHeader>
         <CardContent>
           <div className="rounded-lg overflow-hidden">
-            <EmbedCreateDocument
+            <EmbedCreateEnvelopeV2
               className="h-[1450px] w-full"
               host={host}
               presignToken={presignToken}
+              type="DOCUMENT"
               darkModeDisabled={true}
               cssVars={embedCssVars}
-              onDocumentCreated={handleDocumentCreated}
+              onEnvelopeCreated={handleEnvelopeCreated}
             />
           </div>
         </CardContent>

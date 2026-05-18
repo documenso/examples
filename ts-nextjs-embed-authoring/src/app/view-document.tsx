@@ -13,9 +13,9 @@ import {
 } from "@/components/ui/dialog";
 
 interface ViewDocumentProps {
-  documentId: number;
+  documentId: string;
   documentTitle: string;
-  fetchDocumentUrl: (documentId: number) => Promise<string>;
+  fetchDocumentUrl: (documentId: string) => Promise<string>;
   disabled?: boolean;
 }
 

@@ -2,7 +2,7 @@
 
 import { ReactNode, useState } from "react";
 
-import { unstable_EmbedUpdateDocument as EmbedUpdateDocument } from "@documenso/embed-react";
+import { EmbedUpdateEnvelopeV2 } from "@documenso/embed-react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,7 @@ import { toast } from "@/components/ui/sonner";
 
 type UpdateDocumentProps = {
   presignToken: string;
-  documentId: number;
+  envelopeId: string;
   host?: string;
   trigger?: ReactNode;
   buttonText?: string;
@@ -25,7 +25,7 @@ type UpdateDocumentProps = {
 
 export const UpdateDocument = ({
   presignToken,
-  documentId,
+  envelopeId,
   host,
   trigger,
   buttonText = "Update",
@@ -34,7 +34,7 @@ export const UpdateDocument = ({
 
   const [open, setOpen] = useState(false);
 
-  const handleDocumentUpdated = () => {
+  const handleEnvelopeUpdated = () => {
     setOpen(false);
 
     toast.success("Document Updated successfully");
@@ -53,12 +53,12 @@ export const UpdateDocument = ({
         </DialogHeader>
 
         <div key={open ? "open" : "closed"} className="-mx-4 -mt-6">
-          <EmbedUpdateDocument
+          <EmbedUpdateEnvelopeV2
             className="h-[80dvh] w-full"
             host={host}
             presignToken={presignToken}
-            documentId={documentId}
-            onDocumentUpdated={handleDocumentUpdated}
+            envelopeId={envelopeId}
+            onEnvelopeUpdated={handleEnvelopeUpdated}
           />
         </div>
       </DialogContent>

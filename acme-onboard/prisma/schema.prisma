@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model OnboardingSession {
+  id              String   @id @default(cuid())
+  employeeName    String
+  email           String
+  role            String
+  startDate       String
+  salary          String
+  offerToken      String?
+  offerSigned     Boolean  @default(false)
+  ndaToken        String?
+  ndaSigned       Boolean  @default(false)
+  handbookToken   String?
+  handbookSigned  Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  @@map("onboarding_sessions")
+}

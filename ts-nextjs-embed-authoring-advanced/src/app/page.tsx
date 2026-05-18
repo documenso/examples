@@ -6,12 +6,12 @@ import { AuthoringTabs } from "@/components/authoring/authoring-tabs";
 import { getDocument } from "@/lib/get-document";
 import { sendDocument } from "@/lib/send-document";
 
-async function getDocumentUrlAction(documentId: number): Promise<string> {
+async function getDocumentUrlAction(documentId: string): Promise<string> {
   "use server";
   return await getDocument(documentId);
 }
 
-async function sendDocumentAction(documentId: number): Promise<void> {
+async function sendDocumentAction(documentId: string): Promise<void> {
   "use server";
   return await sendDocument(documentId);
 }
@@ -34,7 +34,7 @@ export default async function Home({
   };
 
   const selectedDocument = params.documentId
-    ? documents.find((d) => d.id === Number(params.documentId)) || null
+    ? documents.find((d) => d.id === params.documentId) || null
     : documents[0] || null;
 
   return (

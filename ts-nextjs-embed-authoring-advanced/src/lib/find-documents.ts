@@ -10,7 +10,7 @@ type Recipient = {
 };
 
 type Document = {
-  id: number;
+  id: string;
   title: string;
   status: "DRAFT" | "PENDING" | "COMPLETED" | "REJECTED";
   createdAt: string;
@@ -25,7 +25,7 @@ export type DocumentsResponse = {
 };
 
 export const findDocuments = async () => {
-  const response = await documenso.documents.find({});
+  const response = await documenso.envelope.envelopeFind({ type: "DOCUMENT" });
 
   const data: Document[] = response.data.map((doc) => ({
     id: doc.id,

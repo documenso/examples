@@ -5,7 +5,7 @@
     "": {
       "name": "my-v0-project",
       "dependencies": {
-        "@documenso/embed-react": "^0.3.0",
+        "@documenso/embed-react": "^0.6.1",
         "@documenso/sdk-typescript": "^0.8.0",
         "@hookform/resolvers": "^3.10.0",
         "@libsql/client": "^0.15.15",
@@ -85,7 +85,7 @@
 
     "@date-fns/tz": ["@date-fns/tz@1.2.0", "", {}, "sha512-LBrd7MiJZ9McsOgxqWX7AaxrDjcFVjWH/tIKJd7pnR7McaslGYOP1QmmiBXdJH/H/yLCT+rcQ7FaPBUxRGUtrg=="],
 
-    "@documenso/embed-react": ["@documenso/embed-react@0.3.0", "", { "peerDependencies": { "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" } }, "sha512-A6yBPCZrlBhkkCU3PRxz07L5XkipgM3lU8WYhfidkD56KkFYrLQTtAXEotR1KJk0I1CoM9W7uml/zs281Qq2cQ=="],
+    "@documenso/embed-react": ["@documenso/embed-react@0.6.1", "", { "peerDependencies": { "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" } }, "sha512-xGHMF7G8nNWaD3FbQjEMdz0D6fU9oB8ibHo5U4qAKl76ijiVD5vzlvidXvNSxIUJLsuXIKQHCu0RUpsHZpkPNw=="],
 
     "@documenso/sdk-typescript": ["@documenso/sdk-typescript@0.8.0", "", { "dependencies": { "@modelcontextprotocol/sdk": "^1.26.0", "zod": "^3.25.0 || ^4.0.0" }, "bin": { "mcp": "bin/mcp-server.js" } }, "sha512-Emzd5j+v8tA8gxtL+M/svVuzSOKMZw3/U4bS8zRoagvQEqkt+XNU2JraPEAJzxTjf3ww6EnlURXydbglBmR7AQ=="],
 

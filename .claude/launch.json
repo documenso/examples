@@ -1,0 +1,161 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "acme-advisory",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "acme-advisory", "--", "--port", "3001"],
+      "port": 3001
+    },
+    {
+      "name": "acme-agency",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "acme-agency", "--", "--port", "3002"],
+      "port": 3002
+    },
+    {
+      "name": "acme-build",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "acme-build", "--", "--port", "3003"],
+      "port": 3003
+    },
+    {
+      "name": "acme-camp",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "acme-camp", "--", "--port", "3004"],
+      "port": 3004
+    },
+    {
+      "name": "acme-compliance",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "acme-compliance", "--", "--port", "3005"],
+      "port": 3005
+    },
+    {
+      "name": "acme-deals",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "acme-deals", "--", "--port", "3006"],
+      "port": 3006
+    },
+    {
+      "name": "acme-fitness",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "acme-fitness", "--", "--port", "3007"],
+      "port": 3007
+    },
+    {
+      "name": "acme-gig",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "acme-gig", "--", "--port", "3008"],
+      "port": 3008
+    },
+    {
+      "name": "acme-insure",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "acme-insure", "--", "--port", "3009"],
+      "port": 3009
+    },
+    {
+      "name": "acme-leasing",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "acme-leasing", "--", "--port", "3010"],
+      "port": 3010
+    },
+    {
+      "name": "acme-legal",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "acme-legal", "--", "--port", "3011"],
+      "port": 3011
+    },
+    {
+      "name": "acme-lending",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "acme-lending", "--", "--port", "3012"],
+      "port": 3012
+    },
+    {
+      "name": "acme-notary",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "acme-notary", "--", "--port", "3013"],
+      "port": 3013
+    },
+    {
+      "name": "acme-onboard",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "acme-onboard", "--", "--port", "3014"],
+      "port": 3014
+    },
+    {
+      "name": "acme-realty",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "acme-realty", "--", "--port", "3015"],
+      "port": 3015
+    },
+    {
+      "name": "acme-staffing",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "acme-staffing", "--", "--port", "3016"],
+      "port": 3016
+    },
+    {
+      "name": "acme-tax",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "acme-tax", "--", "--port", "3017"],
+      "port": 3017
+    },
+    {
+      "name": "acme-trials",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "acme-trials", "--", "--port", "3018"],
+      "port": 3018
+    },
+    {
+      "name": "ts-nextjs-embed-authoring",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "ts-nextjs-embed-authoring", "--", "--port", "3019"],
+      "port": 3019
+    },
+    {
+      "name": "ts-nextjs-embed-authoring-advanced",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "ts-nextjs-embed-authoring-advanced", "--", "--port", "3020"],
+      "port": 3020
+    },
+    {
+      "name": "ts-nextjs-freelance",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "ts-nextjs-freelance", "--", "--port", "3021"],
+      "port": 3021
+    },
+    {
+      "name": "ts-nextjs-gym",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "ts-nextjs-gym", "--", "--port", "3022"],
+      "port": 3022
+    },
+    {
+      "name": "ts-nextjs-saas-sales",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "ts-nextjs-saas-sales", "--", "--port", "3023"],
+      "port": 3023
+    },
+    {
+      "name": "pdf-templates",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "pdf-templates"],
+      "port": null
+    },
+    {
+      "name": "python-flask-backend",
+      "runtimeExecutable": "uv",
+      "runtimeArgs": ["run", "flask", "--app", "app.main", "run", "--port", "5001"],
+      "port": 5001
+    },
+    {
+      "name": "python-flask-frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "python-flask-vendor-agreement/frontend"],
+      "port": 5173
+    }
+  ]
+}
