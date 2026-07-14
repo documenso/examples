@@ -45,8 +45,8 @@ The demo loads the configured template from the Documenso API, selects the parti
 ## Local development
 
 ```bash
-bun install
-bun dev
+npm install
+npm run dev
 ```
 
 Then open `http://localhost:3000`.

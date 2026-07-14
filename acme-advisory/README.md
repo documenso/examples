@@ -16,6 +16,7 @@ This standalone Next.js app shows a realistic RIA onboarding flow:
 ## Stack
 
 - Next.js 16 App Router
+- Node.js + npm
 - React 19
 - Tailwind CSS v4 + shadcn/ui
 - `@documenso/embed-react`
@@ -39,11 +40,11 @@ DATABASE_URL=
 ## Local setup
 
 ```bash
-bun install
-bun run db:generate
-bun run db:push
-bun run db:seed
-bun dev
+npm install
+npm run db:generate
+npm run db:push
+npm run db:seed
+npm run dev
 ```
 
 ## Demo flow

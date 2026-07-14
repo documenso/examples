@@ -35,7 +35,7 @@ export default function SelectRolePage() {
 
       router.push("/")
     } catch {
-      alert(`Failed to log in as ${role}. Please make sure the database is seeded (run 'bun db:seed').`)
+      alert(`Failed to log in as ${role}. Please make sure the database is seeded (run 'npm run db:seed').`)
     } finally {
       setIsLoading(false)
     }

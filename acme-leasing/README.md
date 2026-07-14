@@ -4,7 +4,7 @@ Property-management demo for Documenso embedding. A leasing agent sends Unit 4B'
 
 ## Stack
 
-- Bun
+- Node.js and npm
 - Next.js 16 App Router
 - React 19
 - Tailwind CSS v4 + shadcn/ui
@@ -55,8 +55,8 @@ Expected prefill keys:
 ## Run locally
 
 ```bash
-bun install
-bun dev
+npm install
+npm run dev
 ```
 
 Open `http://localhost:3000`, click Unit 4B, enter the tenant email, and complete both embedded signing steps.
