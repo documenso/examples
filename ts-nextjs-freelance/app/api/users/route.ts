@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json(
-        { error: `No ${role} user found. Please run 'bun db:seed' to create demo users.` },
+        { error: `No ${role} user found. Please run 'npm run db:seed' to create demo users.` },
         { status: 404 }
       )
     }
